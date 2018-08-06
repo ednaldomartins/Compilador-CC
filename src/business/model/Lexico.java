@@ -8,14 +8,13 @@ package business.model;
  *  link da página ensina como usar expressoes regulares na String. muito Util!                     *
  ****************************************************************************************************/
 public class Lexico {
-    public static final String [] PALAVRAS_CHAVES = {"program", "var", "integer", "real", "boolean", "procedure", "begin", "end", "if", "then", "else", "while", "do", "not"};
-    static final String [] DELIMITADORES = {";", ".", ":", "(", ")", ","};
+    public static final String PALAVRAS_CHAVES = "program|var|integer|real|boolean|procedure|begin|end|if|then|else|while|do|not";
+    public static final String DELIMITADORES = ";|.|:|,|(|)";
     //  [^;=] ===> deixar claro que o '=' de ':=' nao eh operador relacional 
     public static final String OPERADORES_RELACIONAIS = "[=|<|>|<=|>=|<>][^:=]";
     
     public static final String OPERADORES_ADITIVOS = "\\w{0}or\\w{0}";
-    static final String [] OPERADORES_ADITIVOSt = {"+", "-", "or"};
-    static final String [] OPERADORES_MULTIPLICATIVOS = {"*", "/", "and"};
+    public static final String OPERADORES_MULTIPLICATIVOS = "[|*|/|][\\w{0}and\\w{0}]";
     public static final String ATRIBUICAO = ":=";
     //  \\.? ===> encontrar ponto 0 ou 1 vez
     static final String NUMEROS_INTEIROS = "\\.?\\d+";
