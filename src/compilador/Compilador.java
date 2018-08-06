@@ -1,13 +1,14 @@
 
 package compilador;
 
+import business.control.ControllerAnalisadorLexico;
 import infra.Arquivo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Lexico;
+import business.model.Lexico;
 
 /**
  * @author marti
@@ -16,10 +17,18 @@ import model.Lexico;
 public class Compilador {
 
     public static void main(String[] args) {
-        testeArquivoArray();
-        testeExpressaoRegular();
+        //testeArquivoArray();
+        //testeExpressaoRegular();
+        ControllerAnalisadorLexico analisador = new ControllerAnalisadorLexico();
+        try {
+            analisador.analisar();
+        } catch (IOException ex) {
+            Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        analisador.exibirTabela();
+
+  
     }
-    
     
     
     //teste sem junit

@@ -1,5 +1,5 @@
 
-package model;
+package business.model;
 
 /**
  * @author marti

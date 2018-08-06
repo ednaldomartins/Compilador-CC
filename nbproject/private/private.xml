@@ -5,8 +5,9 @@
         <group>
             <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/infra/Arquivo.java</file>
             <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/compilador/Compilador.java</file>
-            <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/model/Lexico.java</file>
-            <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/model/Simbolo.java</file>
+            <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/business/model/Simbolo.java</file>
+            <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/business/control/ControllerAnalisadorLexico.java</file>
+            <file>file:/D:/OneDrive/WorkspaceJava/Compilador/src/business/model/Lexico.java</file>
         </group>
     </open-files>
 </project-private>
