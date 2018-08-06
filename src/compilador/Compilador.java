@@ -17,8 +17,8 @@ import business.model.Lexico;
 public class Compilador {
 
     public static void main(String[] args) {
-        //testeArquivoArray();
-        //testeExpressaoRegular();
+        testeArquivoArray();
+        testeExpressaoRegular();
         ControllerAnalisadorLexico analisador = new ControllerAnalisadorLexico();
         try {
             analisador.analisar();
@@ -53,58 +53,58 @@ public class Compilador {
         
         //Testando numeros inteiros
         System.out.print("\n\n\n TESTE DE INTEIROS\n");
-        teste = "993453".matches(Lexico.getNumeroInteiro());//true
+        teste = "993453".matches(Lexico.NUMEROS_INTEIROS);//true
         System.out.print("\n"+  teste  +"\n");
-        teste = "99343.".matches(Lexico.getNumeroInteiro());//false
+        teste = "99343.".matches(Lexico.NUMEROS_INTEIROS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "99.075".matches(Lexico.getNumeroInteiro());//false
+        teste = "99.075".matches(Lexico.NUMEROS_INTEIROS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = ".99545".matches(Lexico.getNumeroInteiro());//true
+        teste = ".99545".matches(Lexico.NUMEROS_INTEIROS);//true
         System.out.print("\n"+  teste  +"\n");
         //hard
-        teste = "99.e075".matches(Lexico.getNumeroInteiro());//false
+        teste = "99.e075".matches(Lexico.NUMEROS_INTEIROS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "e995435".matches(Lexico.getNumeroInteiro());//false
+        teste = "e995435".matches(Lexico.NUMEROS_INTEIROS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = ".95345.".matches(Lexico.getNumeroInteiro());//false
+        teste = ".95345.".matches(Lexico.NUMEROS_INTEIROS);//false
         System.out.print("\n"+  teste  +"\n");
        
         //testando numeros reais
         System.out.print("\n\n\n TESTE DE REAIS\n");
-        teste = "995345".matches(Lexico.getNumeroReal());//false
+        teste = "995345".matches(Lexico.NUMEROS_REAIS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "99534.".matches(Lexico.getNumeroReal());//true
+        teste = "99534.".matches(Lexico.NUMEROS_REAIS);//true
         System.out.print("\n"+  teste  +"\n");
-        teste = "99.054".matches(Lexico.getNumeroReal());//true
+        teste = "99.054".matches(Lexico.NUMEROS_REAIS);//true
         System.out.print("\n"+  teste  +"\n");
-        teste = ".54499".matches(Lexico.getNumeroReal());//false
+        teste = ".54499".matches(Lexico.NUMEROS_REAIS);//false
         System.out.print("\n"+  teste  +"\n");
         //hard
-        teste = "99534..".matches(Lexico.getNumeroReal());//false
+        teste = "99534..".matches(Lexico.NUMEROS_REAIS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "99..054".matches(Lexico.getNumeroReal());//false
+        teste = "99..054".matches(Lexico.NUMEROS_REAIS);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = ".54499.".matches(Lexico.getNumeroReal());//false
+        teste = ".54499.".matches(Lexico.NUMEROS_REAIS);//false
         System.out.print("\n"+  teste  +"\n");
         
         //testando comentarios
         System.out.print("\n\n\n TESTE DE COMENTARIOS\n");
-        teste = "{}".matches(Lexico.getComentario());//true
+        teste = "{}".matches(Lexico.COMENTARIO);//true
         System.out.print("\n"+  teste  +"\n");
-        teste = "{asd".matches(Lexico.getComentario());//false
+        teste = "{asd".matches(Lexico.COMENTARIO);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "{as}d".matches(Lexico.getComentario());//false
+        teste = "{as}d".matches(Lexico.COMENTARIO);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "weq}".matches(Lexico.getComentario());//false
+        teste = "weq}".matches(Lexico.COMENTARIO);//false
         System.out.print("\n"+  teste  +"\n");
-        teste = "w{eq}".matches(Lexico.getComentario());//false
+        teste = "w{eq}".matches(Lexico.COMENTARIO);//false
         System.out.print("\n"+  teste  +"\n");
         /*
             a verificacao do fecha comentario "}" deve ficar em tempo de execucao. 
             ex.: quando vier o primeiro "}" o resto vai ser verificado depois, 
                  e dara um erro pq sera considerado uma variavel nao declarada.
         */
-        teste = "{;~´sdas232;~´asd,.=-)}a3123;~´}".matches(Lexico.getComentario());//true
+        teste = "{;~´sdas232;~´asd,.=-)}a3123;~´}".matches(Lexico.COMENTARIO);//true
         System.out.print("\n"+  teste  +"\n");
     }
     
