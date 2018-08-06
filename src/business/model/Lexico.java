@@ -9,11 +9,14 @@ package business.model;
  ****************************************************************************************************/
 public class Lexico {
     public static final String PALAVRAS_CHAVES = "program|var|integer|real|boolean|procedure|begin|end|if|then|else|while|do|not";
+    
+    public static final String IDENTIDICADOR = "\\w+";
     public static final String DELIMITADORES = ";|.|:|,|(|)";
     //  [^;=] ===> deixar claro que o '=' de ':=' nao eh operador relacional 
     public static final String OPERADORES_RELACIONAIS = "[=|<|>|<=|>=|<>][^:=]";
     
-    public static final String OPERADORES_ADITIVOS = "\\w{0}or\\w{0}";
+    public static final String OPERADORES_ADITIVOS = "[+|-]";
+    public static final String OPERADOR_ADITIVO_OR = "or";
     public static final String OPERADORES_MULTIPLICATIVOS = "[|*|/|][\\w{0}and\\w{0}]";
     public static final String ATRIBUICAO = ":=";
     //  \\.? ===> encontrar ponto 0 ou 1 vez
