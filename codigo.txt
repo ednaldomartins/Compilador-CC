@@ -1,8 +1,12 @@
-ord
+
 program teste; {programa exemplo}
 var
-	valor1: integer;
-	valor2: real;
+	valor1=:: _integer;
+	valor<::= real;
 begin
-	valor1 := 2 + 10;
+	{{comentario errado}}
+	ord or and;
+	andd = *
+	if abc <> 3.
+	valor1 :=: .22 + 10 + 0.33 ;
 end.
