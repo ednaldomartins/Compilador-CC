@@ -1,4 +1,3 @@
-
 program teste; {programa exemplo}
 var
 	valor1=:: _integer;

@@ -17,17 +17,9 @@ import business.model.Lexico;
 public class Compilador {
 
     public static void main(String[] args) {
-        //testeArquivoArray();
-        //testeExpressaoRegular();
-        boolean t = "vara".matches(Lexico.IDENTIDICADOR);
-        System.out.print(t);
         ControllerAnalisadorLexico analisador = new ControllerAnalisadorLexico();
-        try {
-            analisador.analisar();
-        } catch (IOException ex) {
-            Logger.getLogger(Compilador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        analisador.exibirTabela();
+        analisador.analisarV1();
+        //analisador.exibirTabela();
 
   
     }

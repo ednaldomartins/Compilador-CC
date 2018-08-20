@@ -12,6 +12,7 @@ public class Lexico {
     public static final String PALAVRAS_CHAVES = "program|var|integer|real|boolean|procedure|begin|end|if|then|else|while|do|not";//OK
     //  \\w+ ===> qual letra ou digito seguinte. O primeiro caracter ja foi confirmado como letra
     public static final String IDENTIDICADOR = "\\_*\\w+";//OK
+    public static final String IDENTIDICADOR2 = "\\_*[a-zA-Z]\\d*\\_*";//OK
     //  ; | . | : | , | ( | ) ===> compara se e igual a alguma das Strings
     public static final String DELIMITADORES = ";|\\.|:|,|(|)";
     //  [^;=] ===> deixar claro que o '=' de ':=' nao eh operador relacional 
@@ -27,11 +28,13 @@ public class Lexico {
     //  := ===> comparacao comum de Strings
     public static final String ATRIBUICAO = ":=";//OK
     //  \\.? ===> encontrar ponto 0 ou 1 vez
-    public static final String NUMEROS_INTEIROS = "\\.?\\d+";//OK
+    public static final String NUMEROS_INTEIROS = "\\d+";//OK
     //  \\.{1} ===> encontrar ponto exatamento 1 vez entre inteiros (ou no fim) 
     public static final String NUMEROS_REAIS = "\\d+\\.{1}\\d*";//OK
     //  [\\w\\W]* ===> palavra e digito, ou simbolo em qualquer ordem
     public static final String COMENTARIO = "\\{{1}[\\w\\W]*\\}{1}";//OK
+    
+    public static final String COMENTARIO_AULA = "^//[\\w\\W]*";
 
     
 }
