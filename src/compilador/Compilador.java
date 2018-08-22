@@ -18,10 +18,8 @@ public class Compilador {
 
     public static void main(String[] args) {
         ControllerAnalisadorLexico analisador = new ControllerAnalisadorLexico();
-        analisador.analisarV1();
+        analisador.analisar();
         //analisador.exibirTabela();
-
-  
     }
     
     

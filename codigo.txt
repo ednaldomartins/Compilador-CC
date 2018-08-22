@@ -1,11 +1,11 @@
-program teste; {programa exemplo}
+program teste; {programa 1 _)T ; @#  exemplo}
 var
-	valor1=:: _integer;
+	valor1=:: _inte_ger;
 	valor<::= real;
 begin
-	{{comentario errado}}
+	//comentario aula
 	ord or and;
 	andd = *
 	if abc <> 3.
-	valor1 :=: .22 + 10 + 0.33 ;
+	valor1 :=: .22 + 10 - 0.33 ;
 end.

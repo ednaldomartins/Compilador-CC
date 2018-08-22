@@ -11,8 +11,7 @@ public class Lexico {
     //  comparacao comum a qualquer uma do conjunto de Strings
     public static final String PALAVRAS_CHAVES = "program|var|integer|real|boolean|procedure|begin|end|if|then|else|while|do|not";//OK
     //  \\w+ ===> qual letra ou digito seguinte. O primeiro caracter ja foi confirmado como letra
-    public static final String IDENTIDICADOR = "\\_*\\w+";//OK
-    public static final String IDENTIDICADOR2 = "\\_*[a-zA-Z]\\d*\\_*";//OK
+    public static final String IDENTIDICADOR = "\\_*\\w+[\\_\\w+]*";//OK
     //  ; | . | : | , | ( | ) ===> compara se e igual a alguma das Strings
     public static final String DELIMITADORES = ";|\\.|:|,|(|)";
     //  [^;=] ===> deixar claro que o '=' de ':=' nao eh operador relacional 
