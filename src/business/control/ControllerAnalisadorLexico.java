@@ -163,4 +163,7 @@ public class ControllerAnalisadorLexico {
         return null;
     }
 
+    public List<Simbolo> getList (){
+        return this.tabela;
+    }
 }
