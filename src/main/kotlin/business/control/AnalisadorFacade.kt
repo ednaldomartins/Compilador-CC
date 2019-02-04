@@ -21,6 +21,7 @@ class AnalisadorFacade
         var analisadorLexico = ControllerAnalisadorLexico()
         analisadorLexico.analisar(tabela, codigo)
         var analisadorSintatico = ControllerAnalisadorSintatico()
+        analisadorSintatico.analisar(tabela)
     }
 
     /**************************************************************************
