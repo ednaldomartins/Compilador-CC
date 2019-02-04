@@ -4,9 +4,7 @@ import business.control.ControllerAnalisadorLexico
 
 fun main() {
     print("teste")
-    var analisador: AnalisadorFacade = AnalisadorFacade()
+    var analisador = AnalisadorFacade()
     analisador.inicializarAnalisador()
-    //var analisador2: ControllerAnalisadorLexico = ControllerAnalisadorLexico()
-    //analisador2.analisar()
 
 }
