@@ -1,32 +1,18 @@
 
 package business.control;
 
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import business.model.Lexico;
 import business.model.Simbolo;
-import infra.Arquivo;
 
 /**********************************************************************
  * @author marti                                                      *
  *  date: 04.08.2018                                                  *
  *********************************************************************/
 public class ControllerAnalisadorLexico {
-    private List <Simbolo> tabela;
-    private final List codigo;
-    private final String ARQUIVO_ORIGEM = "..//Compilador//codigo.txt";      /**  Windows = \\ , Linux = //  **/
 
-    public ControllerAnalisadorLexico() {
-        this.tabela = new LinkedList<>();
-        this.codigo = new LinkedList<String>(carregarListaArquivo());
-    }
-
-    //trocar por switch case mudando algumas coisas
-    public void analisar()
+    public void analisar(List <Simbolo> tabela, List codigo)
     {
         int numeroLinhas = codigo.size();
         for(int l = 0; l < numeroLinhas; l++)
@@ -144,26 +130,4 @@ public class ControllerAnalisadorLexico {
         System.out.println("FIM DA EXECUCAO");
     }//fim do metodo
 
-    public void exibirTabela ()
-    {
-
-    }
-
-    /**************************************************************************
-     *   Metodo para retornar Arquivo de codigo em List                        *                                                           *
-     *   @return List                                                          *
-     ***************************************************************************/
-    public List carregarListaArquivo ()
-    {
-        try {
-            return new Arquivo(ARQUIVO_ORIGEM).carregarCodigo();
-        } catch (IOException ex) {
-            Logger.getLogger(ControllerAnalisadorLexico.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public List<Simbolo> getList (){
-        return this.tabela;
-    }
 }
