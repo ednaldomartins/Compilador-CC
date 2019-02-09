@@ -11,7 +11,7 @@ import java.util.logging.Logger
 class AnalisadorFacade
 {
     /**  Windows = \\ , Linux = //  **/
-    val ARQUIVO_ORIGEM = "..//Compilador//codigo.txt"
+    val ARQUIVO_ORIGEM = "..//Compilador//codigo2.txt"
     val tabela = LinkedList<Simbolo>()
     val codigo = LinkedList<String>(carregarListaArquivo())
 
