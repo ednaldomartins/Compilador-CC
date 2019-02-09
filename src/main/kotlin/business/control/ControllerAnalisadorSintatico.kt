@@ -1,6 +1,5 @@
 package business.control
 
-import business.model.Lexico
 import business.model.Simbolo
 import java.util.LinkedList
 
@@ -8,72 +7,133 @@ class ControllerAnalisadorSintatico
 {
     var i: Int = 0  //indice
     lateinit var tab: LinkedList<Simbolo>
+    lateinit var listaIdentificadores: LinkedList<String>
 
-    private val VAR = "integer|INTEGER|real|REAL|boolean|BOOLEAN|char|CHAR"
-    private val PROGRAM = "PROGRAM|program"
+    private val PROGRAM = "program|PROGRAM"
+    private val PROCEDURE = "procedure|PROCEDURE"
+    private val BEGIN = "begin|BEGIN"
+    private val END = "end|END"
+    private val VAR = "var|VAR"
+    private val DO = "do|DO"
+    private val WHILE = "while|WHILE"
+    private val IF = "if|IF"
+    private val THEN = "then|THEN"
+    private val ELSE = "else|ELSE"
+    private val TRUE = "true|TRUE"
+    private val FALSE = "false|FALSE"
+    private val NOT = "not|NOT"
+
+    //exclusivamente um tipo de uma variável
+    private val TIPO = "integer|INTEGER|real|REAL|boolean|BOOLEAN|char|CHAR"
+
 
     fun analisar(tabela: LinkedList<Simbolo>)
     {
         tab = tabela    //referencia de tabela
+        listaIdentificadores = LinkedList()
         programId()
     }
 
     /**
      * Estou incrementando o indice na mesma linha que eu uso o get() no if
-     * o incremento usado é o i++, que deve ser incrementado após o uso da variável i
-     * caso encontre algum erro no código, deve-se decrementar o indice para pegar a linha do simbolo que esta errado
+     * o incremento usado é o ++i, que deve ser incrementado antes de acessar a variável i
      */
     private fun programId()
     {
-        if(tab.get(i++).token.matches(PROGRAM.toRegex()))
-            if(tab.get(i++).classificacao.equals("IDENTIFICADOR"))
-                if (tab.get(i++).token.equals(";"))
+        if(tab.get(i).token.matches(PROGRAM.toRegex()))
+        {
+            if (tab.get(++i).classificacao.equals("IDENTIFICADOR"))
+            {
+                listaIdentificadores.add(tab.get(i).token)
+                if (tab.get(++i).token.equals(";"))
+                {
                     this.declaracoesVariaveis()
-                else print("ERRO: é esperado um ';' na linha ${tab.get(--i).linha}")
-            else print("ERRO: é esperado um 'IDENTIFICADOR' para o program, na linha ${tab.get(--i).linha} ")
-        else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  program no início, na linha ${tab.get(--i).linha} ")
+                    //this.declaracoesSubProgramas()
+                    //this.comandoComposto()
+                }
+                else print("ERRO: é esperado um ';' na linha ${tab.get(i).linha}")
+            }
+            else print("ERRO: é esperado um 'IDENTIFICADOR' para o program, na linha ${tab.get(i).linha} ")
+        }
+        else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  program no início, na linha ${tab.get(i).linha} ")
     }
 
     private fun declaracoesVariaveis()
     {
-        while(tab.get(i).classificacao.equals("COMENTARIO")) {i++}
-        if(tab.get(i).token.equals("var"))
-        {
-            i++
+        do {i++} while(tab.get(i).classificacao.equals("COMENTARIO"))
+        if(tab.get(i).token.matches(VAR.toRegex()))
             listaDeclaracoesVariaveis()
-        }
-        else{/*não há lista de declarações de variaveis. CONTINUE...*/}
+        /*else{não há lista de declarações de variaveis. CONTINUE...}*/
     }
 
-    private fun listaDeclaracoesVariaveis()
+    private fun listaDeclaracoesVariaveis() : Boolean
     {
-        while(tab.get(i).classificacao.equals("COMENTARIO")) {i++}
+        //estah em 'var'|','|':', incrementa e verifica se o proximo eh um comentario, se for, continuar incrementando.
+        do {i++} while(tab.get(i).classificacao.equals("COMENTARIO"))
+        //verificar se é um 'IDENTIFICADOR'
         if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
         {
-            //if -> listaDeIdentificadores()  verificar se identificador ja foi declarado para continuar
-            i++
-            if (tab.get(i).token.equals(","))
+            //verificar se já existe um identificador declarado com o mesmo nome
+            if( existeNaListaDeIdentificadores(tab.get(i).token) )
             {
-                i++
-                listaDeclaracoesVariaveis()
+                print("ERRO: 'IDENTIFICADOR' já foi declarado")
+                return false
             }
-            else if (tab.get(i).token.equals(":"))
+            else
             {
-                i++
-                if (tab.get(i).token.matches(VAR.toRegex()))
+                //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
+                listaIdentificadores.add(tab.get(i++).token)
+                if (tab.get(i).token.equals(","))
+                    return listaDeclaracoesVariaveis()
+                else if (tab.get(i).token.equals(":"))
+                {   //depois do ':' tem um TIPO?
+                    if (tipo(tab.get(++i).token))
+                    {
+                        if(tab.get(++i).token.equals(";"))
+                        {
+                            listaDeclaracoesVariaveis()
+                            return true
+                        }
+                        else
+                        {
+                            print("ERRO: é esperado um ';' após o 'TIPO' das variáveis")
+                            return false
+                        }
+
+                    }
+                    else
+                    {
+                        print("ERRO: é esperado um 'TIPO' após declarar as variáveis")
+                        return false
+                    }
+                }
+                else
                 {
-                    tipo()
+                    print("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado.")
+                    return false
                 }
             }
-            else print("ERRO: é esperado uma 'ATRIBUIÇÃO' ou ',' após um 'IDENTIFICADOR'.")
         }
-        else print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' no escopo da lista de variáveis.")
+
+        if(this.listaIdentificadores!=null)
+            return true
+
+        /*else*/
+        print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
+        return false
     }
 
-    private fun tipo()
+    private fun tipo(tipo: String) : Boolean = tipo.matches(TIPO.toRegex())
+
+    private fun existeNaListaDeIdentificadores (identificador: String): Boolean
     {
+        for (id in this.listaIdentificadores)
+            if(id == identificador)
+                return true
 
+        return false
     }
+
 
 }
 
