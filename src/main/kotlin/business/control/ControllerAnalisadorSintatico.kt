@@ -29,7 +29,7 @@ class ControllerAnalisadorSintatico
 
     fun analisar(tabela: LinkedList<Simbolo>)
     {
-        tab = tabela    //referencia de tabela
+        copiarTabelaSemComentarios(tabela)
         listaIdentificadores = LinkedList()
         programId()
     }
@@ -42,14 +42,20 @@ class ControllerAnalisadorSintatico
     {
         if(tab.get(i).token.matches(PROGRAM.toRegex()))
         {
-            if (tab.get(++i).classificacao.equals("IDENTIFICADOR"))
+            i++
+            if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
             {
                 listaIdentificadores.add(tab.get(i).token)
-                if (tab.get(++i).token.equals(";"))
+                i++
+                if (tab.get(i).token.equals(";"))
                 {
-                    this.declaracoesVariaveis()
-                    //this.declaracoesSubProgramas()
-                    //this.comandoComposto()
+                    i++
+                    if(this.declaracoesVariaveis())
+                    {
+                        print("")
+                        //this.declaracoesSubProgramas()
+                        //this.comandoComposto()
+                    }
                 }
                 else print("ERRO: é esperado um ';' na linha ${tab.get(i).linha}")
             }
@@ -58,48 +64,48 @@ class ControllerAnalisadorSintatico
         else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  program no início, na linha ${tab.get(i).linha} ")
     }
 
-    private fun declaracoesVariaveis()
-    {
-        do {i++} while(tab.get(i).classificacao.equals("COMENTARIO"))
-        if(tab.get(i).token.matches(VAR.toRegex()))
-            listaDeclaracoesVariaveis()
+    private fun declaracoesVariaveis() : Boolean {
+        if (tab.get(i).token.matches(VAR.toRegex()))
+            return listaDeclaracoesVariaveis()
         /*else{não há lista de declarações de variaveis. CONTINUE...}*/
+        return true
     }
 
     private fun listaDeclaracoesVariaveis() : Boolean
     {
-        //estah em 'var'|','|':', incrementa e verifica se o proximo eh um comentario, se for, continuar incrementando.
-        do {i++} while(tab.get(i).classificacao.equals("COMENTARIO"))
+        //estah em 'var'|','|':'
         //verificar se é um 'IDENTIFICADOR'
+        i++
         if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
         {
             //verificar se já existe um identificador declarado com o mesmo nome
             if( existeNaListaDeIdentificadores(tab.get(i).token) )
             {
-                print("ERRO: 'IDENTIFICADOR' já foi declarado")
+                print("ERRO: ['IDENTIFICADOR': ${tab.get(i).token}, linha ${tab.get(i).linha}] já foi declarado")
                 return false
             }
             else
             {
                 //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
-                listaIdentificadores.add(tab.get(i++).token)
+                listaIdentificadores.add(tab.get(i).token)
+                i++
                 if (tab.get(i).token.equals(","))
                     return listaDeclaracoesVariaveis()
                 else if (tab.get(i).token.equals(":"))
                 {   //depois do ':' tem um TIPO?
-                    if (tipo(tab.get(++i).token))
+                    i++
+                    if (tipo(tab.get(i).token))
                     {
-                        if(tab.get(++i).token.equals(";"))
+                        i++
+                        if(tab.get(i).token.equals(";"))
                         {
-                            listaDeclaracoesVariaveis()
-                            return true
+                            return listaDeclaracoesVariaveis()
                         }
                         else
                         {
                             print("ERRO: é esperado um ';' após o 'TIPO' das variáveis")
                             return false
                         }
-
                     }
                     else
                     {
@@ -115,11 +121,15 @@ class ControllerAnalisadorSintatico
             }
         }
 
-        if(this.listaIdentificadores!=null)
-            return true
-
-        /*else*/
-        print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
+        //como encontrou um VAR, entao tem que ter uma lista de variaveis.
+        if(!this.listaIdentificadores.isNullOrEmpty())
+        {
+            if(tab.get(i).token.matches(BEGIN.toRegex()) || tab.get(i).token.matches(PROCEDURE.toRegex()))
+                return true
+            else print("ERRO: Após as declarações de variáveis é esperando um escopo de um método")
+        }
+        else print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
+        /*se entrou em algum dos else acima entao vai retornar um false aqui*/
         return false
     }
 
@@ -134,6 +144,13 @@ class ControllerAnalisadorSintatico
         return false
     }
 
+    private fun copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
+    {
+        this.tab = LinkedList()
+        for(t in tabela)
+            if(t.classificacao != "COMENTARIO")
+                this.tab.add(t)
+    }
 
 }
 
