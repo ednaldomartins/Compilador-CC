@@ -1,11 +1,8 @@
 program teste; {programa 1 _)T ; @#  exemplo}
 var
-	valor1=:: _inte_ger;
-	valor<::= real;
+	valor1, valor2: integer;
+    valor2: real;   //erro de variável já declarada
 begin
-	//comentario aula
-	ord or and;
-	andd = *
-	if abc <> 3.
-	valor1 :=: .22 + 10 - 0.33 ;
+	valor := 10;
+
 end.

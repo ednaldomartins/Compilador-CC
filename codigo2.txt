@@ -1,7 +1,7 @@
 program teste; {programa 1 _)T ; @#  exemplo}
 var
-	valor1: integer;
-	valor2: real;
+	valor1, valor2: integer;
+	valor3: real;
 begin
 	valor1 := 10;
 end.
