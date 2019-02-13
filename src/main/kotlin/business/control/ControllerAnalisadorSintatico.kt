@@ -73,7 +73,47 @@ class ControllerAnalisadorSintatico
 
     private fun listaDeclaracoesVariaveis() : Boolean
     {
-        //estah em 'var'|','|':'
+        if(listaDeIdentificadores())
+        {
+            i++
+            if (tipo(tab.get(i).token))
+            {
+                i++
+                if(tab.get(i).token.equals(";"))
+                {
+                    return listaDeclaracoesVariaveis()
+                }
+                else
+                {
+                    print("ERRO: é esperado um ';' após o 'TIPO' das variáveis")
+                    return false
+                }
+            }
+            else
+            {
+                print("ERRO: é esperado um 'TIPO' após declarar as variáveis")
+                return false
+            }
+        }
+        else if(!this.listaIdentificadores.isNullOrEmpty())
+        {
+            if(tab.get(i).token.matches(BEGIN.toRegex()) || tab.get(i).token.matches(PROCEDURE.toRegex()))
+                return true
+            else
+            {
+                print("ERRO: Após as declarações de variáveis é esperando um escopo de um método")
+                return false
+            }
+        }
+        else
+        {   //como encontrou um VAR, entao tem que ter uma lista de variaveis.
+            print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
+            return false   /*houve algum erro na lista de identificadores*/
+        }
+    }
+
+    private fun listaDeIdentificadores() : Boolean
+    {
         //verificar se é um 'IDENTIFICADOR'
         i++
         if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
@@ -90,29 +130,9 @@ class ControllerAnalisadorSintatico
                 listaIdentificadores.add(tab.get(i).token)
                 i++
                 if (tab.get(i).token.equals(","))
-                    return listaDeclaracoesVariaveis()
+                    return listaDeIdentificadores() //|id
                 else if (tab.get(i).token.equals(":"))
-                {   //depois do ':' tem um TIPO?
-                    i++
-                    if (tipo(tab.get(i).token))
-                    {
-                        i++
-                        if(tab.get(i).token.equals(";"))
-                        {
-                            return listaDeclaracoesVariaveis()
-                        }
-                        else
-                        {
-                            print("ERRO: é esperado um ';' após o 'TIPO' das variáveis")
-                            return false
-                        }
-                    }
-                    else
-                    {
-                        print("ERRO: é esperado um 'TIPO' após declarar as variáveis")
-                        return false
-                    }
-                }
+                    return true
                 else
                 {
                     print("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado.")
@@ -120,18 +140,9 @@ class ControllerAnalisadorSintatico
                 }
             }
         }
-
-        //como encontrou um VAR, entao tem que ter uma lista de variaveis.
-        if(!this.listaIdentificadores.isNullOrEmpty())
-        {
-            if(tab.get(i).token.matches(BEGIN.toRegex()) || tab.get(i).token.matches(PROCEDURE.toRegex()))
-                return true
-            else print("ERRO: Após as declarações de variáveis é esperando um escopo de um método")
-        }
-        else print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
-        /*se entrou em algum dos else acima entao vai retornar um false aqui*/
-        return false
+        else return false   /*se já declarou as variáveis, pode ser um begin|procedure*/
     }
+
 
     private fun tipo(tipo: String) : Boolean = tipo.matches(TIPO.toRegex())
 
