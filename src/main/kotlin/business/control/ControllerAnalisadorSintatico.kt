@@ -40,10 +40,10 @@ class ControllerAnalisadorSintatico
      */
     private fun programId()
     {
-        if(tab.get(i).token.matches(PROGRAM.toRegex()))
+        if(program())
         {
             i++
-            if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
+            if (identificador())
             {
                 listaIdentificadores.add(tab.get(i).token)
                 i++
@@ -53,7 +53,7 @@ class ControllerAnalisadorSintatico
                     if(this.declaracoesVariaveis())
                     {
                         print("")
-                        //this.declaracoesSubProgramas()
+                        this.declaracoesDeSubprogramas()
                         //this.comandoComposto()
                     }
                 }
@@ -65,7 +65,7 @@ class ControllerAnalisadorSintatico
     }
 
     private fun declaracoesVariaveis() : Boolean {
-        if (tab.get(i).token.matches(VAR.toRegex()))
+        if (var_())
             return listaDeclaracoesVariaveis()
         /*else{não há lista de declarações de variaveis. CONTINUE...}*/
         return true
@@ -76,7 +76,7 @@ class ControllerAnalisadorSintatico
         if(listaDeIdentificadores())
         {
             i++
-            if (tipo(tab.get(i).token))
+            if (tipo())
             {
                 i++
                 if(tab.get(i).token.equals(";"))
@@ -97,7 +97,7 @@ class ControllerAnalisadorSintatico
         }
         else if(!this.listaIdentificadores.isNullOrEmpty())
         {
-            if(tab.get(i).token.matches(BEGIN.toRegex()) || tab.get(i).token.matches(PROCEDURE.toRegex()))
+            if(begin() || procedure())
                 return true
             else
             {
@@ -116,7 +116,7 @@ class ControllerAnalisadorSintatico
     {
         //verificar se é um 'IDENTIFICADOR'
         i++
-        if (tab.get(i).classificacao.equals("IDENTIFICADOR"))
+        if (identificador())
         {
             //verificar se já existe um identificador declarado com o mesmo nome
             if( existeNaListaDeIdentificadores(tab.get(i).token) )
@@ -144,8 +144,45 @@ class ControllerAnalisadorSintatico
     }
 
 
-    private fun tipo(tipo: String) : Boolean = tipo.matches(TIPO.toRegex())
+    private fun declaracoesDeSubprogramas(): Boolean
+    {
+        if (procedure())
+        {
 
+            return true
+        }
+        else if(begin())
+        {
+            return true
+        }
+        else
+        {
+            println("ERRO: é esperado um 'BEGIN' ou 'PROCEDURE'")
+            return false
+        }
+
+    }
+
+
+    /*******************************************************************************************************************
+     *                                   Atalhos para testar Regex                                                     *
+     ******************************************************************************************************************/
+    private fun program() : Boolean = tab.get(i).token.matches(PROGRAM.toRegex())
+
+    private fun begin() : Boolean = tab.get(i).token.matches(BEGIN.toRegex())
+
+    private fun procedure() : Boolean = tab.get(i).token.matches(PROCEDURE.toRegex())
+
+    private fun var_() : Boolean = tab.get(i).token.matches(VAR.toRegex())
+
+    private fun identificador() : Boolean = tab.get(i).classificacao.equals("IDENTIFICADOR")
+
+    private fun tipo() : Boolean = tab.get(i).token.matches(TIPO.toRegex())
+
+
+    /*******************************************************************************************************************
+     *                           Métodos auxiliares para o analisador sintático                                        *
+     ******************************************************************************************************************/
     private fun existeNaListaDeIdentificadores (identificador: String): Boolean
     {
         for (id in this.listaIdentificadores)
