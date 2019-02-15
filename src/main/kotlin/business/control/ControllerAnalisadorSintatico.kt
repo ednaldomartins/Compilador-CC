@@ -2,6 +2,7 @@ package business.control
 
 import business.model.Procedimento
 import business.model.Simbolo
+import business.model.Variavel
 import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
@@ -46,9 +47,11 @@ class ControllerAnalisadorSintatico
         if(program())
         {
             i++
+            val nomeDoPrograma = tab.get(i).token
             if (identificador())
             {
-                listaIdentificadores.add(tab.get(i).token)
+                listaIdentificadores.add(nomeDoPrograma)
+                listaProcedimentos.add(Procedimento(nomeDoPrograma))
                 i++
                 if (tab.get(i).token.equals(";"))
                 {
@@ -81,6 +84,12 @@ class ControllerAnalisadorSintatico
             i++
             if (tipo())
             {
+                /*  definir o tipo em todas as variaveis que foram declaradas  */
+                var j = listaProcedimentos.last.argumentos.size - 1
+                while (j >= 0 && listaProcedimentos.last.argumentos.get(j).tipo == "")
+                {
+                    listaProcedimentos.last.argumentos.get(j--).tipo = tab.get(i).token
+                }
                 i++
                 if(tab.get(i).token.equals(";"))
                 {
@@ -121,16 +130,23 @@ class ControllerAnalisadorSintatico
         i++
         if (identificador())
         {
+            /*****************************************************
+             *
+             * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
+             *
+             *****************************************************/
             //verificar se já existe um identificador declarado com o mesmo nome
-            if( existeNaListaDeIdentificadores(tab.get(i).token) )
+            val nomeVariavel = tab.get(i).token
+            if( existeNaListaDeIdentificadores(nomeVariavel) )
             {
-                print("ERRO: ['IDENTIFICADOR': ${tab.get(i).token}, linha ${tab.get(i).linha}] já foi declarado")
+                print("ERRO: ['IDENTIFICADOR': $nomeVariavel, linha ${tab.get(i).linha}] já foi declarado")
                 return false
             }
             else
             {
                 //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
-                listaIdentificadores.add(tab.get(i).token)
+                listaIdentificadores.add(nomeVariavel)//remover essa lista
+                listaProcedimentos.last.argumentos.add(Variavel(nomeVariavel, ""))
                 i++
                 if (tab.get(i).token.equals(","))
                     return listaDeIdentificadores() //|id
@@ -151,19 +167,7 @@ class ControllerAnalisadorSintatico
     {
         if (procedure())
         {
-            if(procedureId())
-            {
-                /*
-                declaracoes de var
-                declaracoes de subprog(recursao)
-                comando composto
-                 */
-                return true//pra tirar o erro por enquanto
-            }
-            else
-            {
-                return false//pra tirar o erro por enquanto
-            }
+            return declaracaoDeSubprograma()
         }
         else if(begin())
         {
@@ -177,6 +181,32 @@ class ControllerAnalisadorSintatico
 
     }
 
+    private fun declaracaoDeSubprograma() :Boolean{
+        if(procedureId())
+        {
+            /* Um procedimento pode ter var: no início do seu escopo    */
+            i++
+            if (declaracoesVariaveis())
+            {
+                /*  após as declarações de variáveis e antes do begin, um procedimento pode conter um subprograma   */
+                if (declaracoesDeSubprogramas())
+                {
+
+                }
+            }
+            /*
+            declaracoes de var
+            declaracoes de subprog(recursao)
+            comando composto
+             */
+            return true//pra tirar o erro por enquanto
+        }
+        else
+        {
+            return false//pra tirar o erro por enquanto
+        }
+    }
+
     private fun procedureId() : Boolean
     {
         i++
@@ -185,50 +215,68 @@ class ControllerAnalisadorSintatico
             val nomeProcedimento = tab.get(i).token //procedimento só será salvo se passar nos testes
             var novoProcedimento = Procedimento(nomeProcedimento)
             i++
-            if (tab.get(i).token.equals("("))
+            if (argumentos(novoProcedimento))
             {
-                i++
-                if (var_()) //se for um 'var' pula, não interessa para o sintático no momento
-                    i++
-                if (argumentos(novoProcedimento))
+                /*****************************************************
+                 *
+                 * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
+                 *
+                 *****************************************************/
+                if (existeNaListaDeProcedimentos(novoProcedimento))
                 {
-                    if (existeNaListaDeProcedimentos(novoProcedimento))
-                    {
-                        println("ERRO: O procedimento já existe com mesmo nome e argumentos")
-                        return false
-                    }
-                    else
-                    {
-                        listaProcedimentos.add(novoProcedimento)
-                        return true
-                    }
-                }
-                else    //houve um erro na lista de argumentos
-                {
-                    println("ERRO: problema na lista de argumentos")
+                    println("ERRO: O procedimento já existe com mesmo nome e argumentos")
                     return false
                 }
+                else
+                {
+                    listaProcedimentos.add(novoProcedimento)
+                    return true
+                }
             }
-            else if (tab.get(i).token.equals(";"))
+            else    //houve um erro na lista de argumentos
             {
-                return true
+                println("ERRO: problema na lista de argumentos")
+                return false
             }
         }
-        //um simples false. pode ser um begin. nada de erro ainda.
+        else if (begin())
+        {
+            return true
+        }
+
         return false
     }
 
     private fun argumentos(procedimento: Procedimento) : Boolean
     {
+        if (tab.get(i).token.equals("("))   //tem lista de parâmetros
+            return listaDeParametros(procedimento)
+        else if (tab.get(i).token.equals(";"))  //não tem lista de parâmetros
+            return true
+        else
+        {
+            println("ERRO: ao declarar um procedimento é esperado uma lista de argumentos ou ';'")
+            return false
+        }
+    }
+
+    private fun listaDeParametros(procedimento: Procedimento): Boolean
+    {
+        i++
+        if (var_()) //se for um 'var' pula, não interessa para o sintático no momento
+            i++
+
         if (identificador())
         {
+            val nomeArgumento = tab.get(i).token
             i++
             if (tab.get(i).token.equals(":"))
             {
                 i++
+                val tipoArgurmento = tab.get(i).token
                 if (tipo())
                 {
-                    procedimento.argumentos.add(tab.get(i).token)//adiciona o tipo do argumento
+                    procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))//adiciona o tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
                     i++
                     if( tab.get(i).token.equals(")") )
                     {
@@ -242,10 +290,10 @@ class ControllerAnalisadorSintatico
                         }
                     }
                     //recursivamento valida os próximos argumentos
-                    else if (tab.get(i).token.equals(","))
+                    else if (tab.get(i).token.equals(";"))
                     {
                         i++
-                        return argumentos(procedimento)
+                        return listaDeParametros(procedimento)
                     }
                     else
                     {
@@ -294,9 +342,10 @@ class ControllerAnalisadorSintatico
      ******************************************************************************************************************/
     private fun existeNaListaDeIdentificadores (identificador: String): Boolean
     {
-        for (id in this.listaIdentificadores)
-            if(id == identificador)
-                return true
+        if (!listaProcedimentos.isNullOrEmpty())
+            while( i < this.listaProcedimentos.last.argumentos.size)
+                if(identificador == listaProcedimentos.last.argumentos.get(i++).nome)
+                    return true
 
         return false
     }
@@ -311,16 +360,19 @@ class ControllerAnalisadorSintatico
                     if (proc.nome.toLowerCase() == procedimento.nome.toLowerCase()) {//no refinamento vou verificar nome|NOME
                         if (proc.argumentos.size == procedimento.argumentos.size) {
                             for (i in 0..proc.argumentos.size) {
-                                if (proc.argumentos.get(i).toLowerCase() == procedimento.argumentos.get(i).toLowerCase())
+                                if (proc.argumentos.get(i).tipo.toLowerCase() == procedimento.argumentos.get(i).tipo.toLowerCase())
                                 else
                                     return false
                             }
                         }
+                        else return false   //tem o mesmo nome, mas a lista de parâmetros é diferente
                     }
+                    else
+                        return false    //tem o nome diferente
                 }
             }
             else
-                return false
+                return false    //ainda não existe procedimentos, logo não existe outro igual
         }
         //se não houve diferença, então retorna true
         return true
