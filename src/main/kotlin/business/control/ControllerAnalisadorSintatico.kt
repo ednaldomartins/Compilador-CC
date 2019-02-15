@@ -38,9 +38,13 @@ class ControllerAnalisadorSintatico
         programId()
     }
 
-    /**
-     * Estou incrementando o indice na mesma linha que eu uso o get() no if
-     * o incremento usado é o ++i, que deve ser incrementado antes de acessar a variável i
+    /***
+     *  programa →
+     *      program id;
+     *      declarações_variáveis
+     *      declarações_de_subprogramas
+     *      comando_composto
+     *      .
      */
     private fun programId()
     {
@@ -70,6 +74,12 @@ class ControllerAnalisadorSintatico
         else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  program no início, na linha ${tab.get(i).linha} ")
     }
 
+
+    /***
+     *  declarações_variáveis →
+     *      var lista_declarações_variáveis
+     *      | ε
+     */
     private fun declaracoesVariaveis() : Boolean {
         if (var_())
             return listaDeclaracoesVariaveis()
@@ -77,6 +87,12 @@ class ControllerAnalisadorSintatico
         return true
     }
 
+
+    /***
+     *  lista_declarações_variáveis →
+     *      lista_declarações_variáveis lista_de_identificadores: tipo;
+     *      | lista_de_identificadores: tipo;
+     */
     private fun listaDeclaracoesVariaveis() : Boolean
     {
         if(listaDeIdentificadores())
@@ -124,6 +140,12 @@ class ControllerAnalisadorSintatico
         }
     }
 
+
+    /***
+     *  lista_de_identificadores →
+     *      id
+     *      | lista_de_identificadores, id
+     */
     private fun listaDeIdentificadores() : Boolean
     {
         //verificar se é um 'IDENTIFICADOR'
@@ -163,6 +185,11 @@ class ControllerAnalisadorSintatico
     }
 
 
+    /***
+     *  declarações_de_subprogramas →
+     *      declarações_de_subprogramas declaração_de_subprograma;
+     *      | ε
+     */
     private fun declaracoesDeSubprogramas(): Boolean
     {
         if (procedure())
@@ -181,6 +208,14 @@ class ControllerAnalisadorSintatico
 
     }
 
+
+    /***
+     *  declaração_de_subprograma →
+     *      procedure id argumentos;
+     *      declarações_variáveis
+     *      declarações_de_subprogramas
+     *      comando_composto
+     */
     private fun declaracaoDeSubprograma() :Boolean{
         if(procedureId())
         {
@@ -193,12 +228,11 @@ class ControllerAnalisadorSintatico
                 {
 
                 }
+                /*
+                comando composto
+                */
             }
-            /*
-            declaracoes de var
-            declaracoes de subprog(recursao)
-            comando composto
-             */
+
             return true//pra tirar o erro por enquanto
         }
         else
@@ -247,6 +281,11 @@ class ControllerAnalisadorSintatico
         return false
     }
 
+    /***
+     *  argumentos →
+     *      (lista_de_parametros)
+     *      | ε
+     */
     private fun argumentos(procedimento: Procedimento) : Boolean
     {
         if (tab.get(i).token.equals("("))   //tem lista de parâmetros
@@ -260,6 +299,11 @@ class ControllerAnalisadorSintatico
         }
     }
 
+    /***
+     *  lista_de_parametros →
+     *      lista_de_identificadores: tipo
+     *      | lista_de_parametros; lista_de_identificadores: tipo
+     */
     private fun listaDeParametros(procedimento: Procedimento): Boolean
     {
         i++
@@ -292,7 +336,6 @@ class ControllerAnalisadorSintatico
                     //recursivamento valida os próximos argumentos
                     else if (tab.get(i).token.equals(";"))
                     {
-                        i++
                         return listaDeParametros(procedimento)
                     }
                     else
