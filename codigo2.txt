@@ -1,7 +1,31 @@
 program teste; {programa 1 _)T ; @#  exemplo}
 var
-	valor1, valor2: integer;
-	valor3: real;
+    y:real;
+
+procedure adicao(var x:real);
+		var
+            a, b: real;
+		Begin
+            a:=1;
+            b:=2;
+			x:=a+b;
+			writeln(x);
+		end;
+
+procedure adicao;
+        var
+            x, a, b: real;
+		Begin
+            a:=1;
+            b:=2;
+			x:=a+b;
+			writeln(x);
+		end;
+
 begin
-	valor1 := 10;
+    y:=4;
+    writeln(y);
+    adicao(y);
+    adicao;
+    writeln(y);
 end.
