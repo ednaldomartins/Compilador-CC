@@ -1,5 +1,6 @@
 package business.control
 
+import business.model.Procedimento
 import business.model.Simbolo
 import java.util.LinkedList
 
@@ -8,6 +9,7 @@ class ControllerAnalisadorSintatico
     var i: Int = 0  //indice
     lateinit var tab: LinkedList<Simbolo>
     lateinit var listaIdentificadores: LinkedList<String>
+    lateinit var listaProcedimentos: LinkedList<Procedimento>
 
     private val PROGRAM = "program|PROGRAM"
     private val PROCEDURE = "procedure|PROCEDURE"
@@ -31,6 +33,7 @@ class ControllerAnalisadorSintatico
     {
         copiarTabelaSemComentarios(tabela)
         listaIdentificadores = LinkedList()
+        listaProcedimentos = LinkedList()
         programId()
     }
 
@@ -148,8 +151,19 @@ class ControllerAnalisadorSintatico
     {
         if (procedure())
         {
-
-            return true
+            if(procedureId())
+            {
+                /*
+                declaracoes de var
+                declaracoes de subprog(recursao)
+                comando composto
+                 */
+                return true//pra tirar o erro por enquanto
+            }
+            else
+            {
+                return false//pra tirar o erro por enquanto
+            }
         }
         else if(begin())
         {
@@ -161,6 +175,101 @@ class ControllerAnalisadorSintatico
             return false
         }
 
+    }
+
+    private fun procedureId() : Boolean
+    {
+        i++
+        if (identificador())
+        {
+            val nomeProcedimento = tab.get(i).token //procedimento só será salvo se passar nos testes
+            var novoProcedimento = Procedimento(nomeProcedimento)
+            i++
+            if (tab.get(i).token.equals("("))
+            {
+                i++
+                if (var_()) //se for um 'var' pula, não interessa para o sintático no momento
+                    i++
+                if (argumentos(novoProcedimento))
+                {
+                    if (existeNaListaDeProcedimentos(novoProcedimento))
+                    {
+                        println("ERRO: O procedimento já existe com mesmo nome e argumentos")
+                        return false
+                    }
+                    else
+                    {
+                        listaProcedimentos.add(novoProcedimento)
+                        return true
+                    }
+                }
+                else    //houve um erro na lista de argumentos
+                {
+                    println("ERRO: problema na lista de argumentos")
+                    return false
+                }
+            }
+            else if (tab.get(i).token.equals(";"))
+            {
+                return true
+            }
+        }
+        //um simples false. pode ser um begin. nada de erro ainda.
+        return false
+    }
+
+    private fun argumentos(procedimento: Procedimento) : Boolean
+    {
+        if (identificador())
+        {
+            i++
+            if (tab.get(i).token.equals(":"))
+            {
+                i++
+                if (tipo())
+                {
+                    procedimento.argumentos.add(tab.get(i).token)//adiciona o tipo do argumento
+                    i++
+                    if( tab.get(i).token.equals(")") )
+                    {
+                        i++
+                        if (tab.get(i).token.equals(";"))
+                            return true
+                        else
+                        {
+                            println("ERRO: É esperado um ';' para completar o procedimento")
+                            return false
+                        }
+                    }
+                    //recursivamento valida os próximos argumentos
+                    else if (tab.get(i).token.equals(","))
+                    {
+                        i++
+                        return argumentos(procedimento)
+                    }
+                    else
+                    {
+                        println("ERRO: É esperado um ')' para completar os argumentos ou ',' para novos argumentos.")
+                        return false
+                    }
+                }
+                else
+                {
+                    println("ERRO: É esperado o tipo do argumento na linha")
+                    return false
+                }
+            }
+            else
+            {
+                println("ERRO: É esperado ':' após o nome do argumento na linha")
+                return false
+            }
+        }
+        else
+        {
+            println("ERRO: Após abrir lista de argumentos para um programa")
+            return false
+        }
     }
 
 
@@ -190,6 +299,31 @@ class ControllerAnalisadorSintatico
                 return true
 
         return false
+    }
+
+    private fun existeNaListaDeProcedimentos (procedimento: Procedimento): Boolean
+    {
+        //identificador0 é o nome do programa.
+        if (procedimento.nome != listaIdentificadores.get(0))
+        {
+            if (!this.listaProcedimentos.isNullOrEmpty()) {
+                for (proc in this.listaProcedimentos) {
+                    if (proc.nome.toLowerCase() == procedimento.nome.toLowerCase()) {//no refinamento vou verificar nome|NOME
+                        if (proc.argumentos.size == procedimento.argumentos.size) {
+                            for (i in 0..proc.argumentos.size) {
+                                if (proc.argumentos.get(i).toLowerCase() == procedimento.argumentos.get(i).toLowerCase())
+                                else
+                                    return false
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                return false
+        }
+        //se não houve diferença, então retorna true
+        return true
     }
 
     private fun copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
