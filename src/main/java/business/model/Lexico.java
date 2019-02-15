@@ -14,7 +14,7 @@ public class Lexico
     //  \\w+ ===> qual letra ou digito seguinte. O primeiro caracter ja foi confirmado como letra
     public static final String IDENTIDICADOR = "\\_*\\w+[\\_\\w+]*";//OK
     //  ; | . | : | , | ( | ) ===> compara se e igual a alguma das Strings
-    public static final String DELIMITADORES = ";|\\.|:|,|(|)";
+    public static final String DELIMITADORES = ";|\\.|:|,|\\(|\\)";
     //  [^;=] ===> deixar claro que o '=' de ':=' nao eh operador relacional
     public static final String OPERADORES_RELACIONAIS = "=|<|>|<=|>=|<>";//OK
     //  +|- ===> String igual a + ou a -
