@@ -7,7 +7,7 @@ import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
 {
-    var i: Int = 0  //indice
+    var indice: Int = 0
     lateinit var tab: LinkedList<Simbolo>
     lateinit var listaIdentificadores: LinkedList<String>
     lateinit var listaProcedimentos: LinkedList<Procedimento>
@@ -26,13 +26,13 @@ class ControllerAnalisadorSintatico
     private val FALSE = "false|FALSE"
     private val NOT = "not|NOT"
 
-    //exclusivamente um tipo de uma variável
+    //exclusivamente um REGEX_tipo de uma variável
     private val TIPO = "integer|INTEGER|real|REAL|boolean|BOOLEAN|char|CHAR"
 
 
     fun analisar(tabela: LinkedList<Simbolo>)
     {
-        copiarTabelaSemComentarios(tabela)
+        AUX_copiarTabelaSemComentarios(tabela)
         listaIdentificadores = LinkedList()
         listaProcedimentos = LinkedList()
         programId()
@@ -40,7 +40,7 @@ class ControllerAnalisadorSintatico
 
     /***
      *  programa →
-     *      program id;
+     *      REGEX_program id;
      *      declarações_variáveis
      *      declarações_de_subprogramas
      *      comando_composto
@@ -48,18 +48,18 @@ class ControllerAnalisadorSintatico
      */
     private fun programId()
     {
-        if(program())
+        if(REGEX_program())
         {
-            i++
-            val nomeDoPrograma = tab.get(i).token
-            if (identificador())
+            AUX_proximo()
+            val nomeDoPrograma = tab.get(indice).token
+            if (REGEX_identificador())
             {
                 listaIdentificadores.add(nomeDoPrograma)
                 listaProcedimentos.add(Procedimento(nomeDoPrograma))
-                i++
-                if (tab.get(i).token.equals(";"))
+                AUX_proximo()
+                if (tab.get(indice).token.equals(";"))
                 {
-                    i++
+                    AUX_proximo()
                     if(this.declaracoesVariaveis())
                     {
                         print("")
@@ -67,11 +67,11 @@ class ControllerAnalisadorSintatico
                         //this.comandoComposto()
                     }
                 }
-                else print("ERRO: é esperado um ';' na linha ${tab.get(i).linha}")
+                else print("ERRO: é esperado um ';' na linha ${tab.get(indice).linha}")
             }
-            else print("ERRO: é esperado um 'IDENTIFICADOR' para o program, na linha ${tab.get(i).linha} ")
+            else print("ERRO: é esperado um 'IDENTIFICADOR' para o REGEX_program, na linha ${tab.get(indice).linha} ")
         }
-        else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  program no início, na linha ${tab.get(i).linha} ")
+        else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  REGEX_program no início, na linha ${tab.get(indice).linha} ")
     }
 
 
@@ -81,7 +81,7 @@ class ControllerAnalisadorSintatico
      *      | ε
      */
     private fun declaracoesVariaveis() : Boolean {
-        if (var_())
+        if (REGEX_var())
             return listaDeclaracoesVariaveis()
         /*else{não há lista de declarações de variaveis. CONTINUE...}*/
         return true
@@ -90,24 +90,24 @@ class ControllerAnalisadorSintatico
 
     /***
      *  lista_declarações_variáveis →
-     *      lista_declarações_variáveis lista_de_identificadores: tipo;
-     *      | lista_de_identificadores: tipo;
+     *      lista_declarações_variáveis lista_de_identificadores: REGEX_tipo;
+     *      | lista_de_identificadores: REGEX_tipo;
      */
     private fun listaDeclaracoesVariaveis() : Boolean
     {
         if(listaDeIdentificadores())
         {
-            i++
-            if (tipo())
+            AUX_proximo()
+            if (REGEX_tipo())
             {
-                /*  definir o tipo em todas as variaveis que foram declaradas  */
+                /*  definir o REGEX_tipo em todas as variaveis que foram declaradas  */
                 var j = listaProcedimentos.last.argumentos.size - 1
                 while (j >= 0 && listaProcedimentos.last.argumentos.get(j).tipo == "")
                 {
-                    listaProcedimentos.last.argumentos.get(j--).tipo = tab.get(i).token
+                    listaProcedimentos.last.argumentos.get(j--).tipo = tab.get(indice).token
                 }
-                i++
-                if(tab.get(i).token.equals(";"))
+                AUX_proximo()
+                if(tab.get(indice).token.equals(";"))
                 {
                     return listaDeclaracoesVariaveis()
                 }
@@ -125,7 +125,7 @@ class ControllerAnalisadorSintatico
         }
         else if(!this.listaIdentificadores.isNullOrEmpty())
         {
-            if(begin() || procedure())
+            if(REGEX_begin() || REGEX_procedure())
                 return true
             else
             {
@@ -149,19 +149,19 @@ class ControllerAnalisadorSintatico
     private fun listaDeIdentificadores() : Boolean
     {
         //verificar se é um 'IDENTIFICADOR'
-        i++
-        if (identificador())
+        AUX_proximo()
+        if (REGEX_identificador())
         {
             /*****************************************************
              *
              * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
              *
              *****************************************************/
-            //verificar se já existe um identificador declarado com o mesmo nome
-            val nomeVariavel = tab.get(i).token
+            //verificar se já existe um REGEX_identificador declarado com o mesmo nome
+            val nomeVariavel = tab.get(indice).token
             if( existeNaListaDeIdentificadores(nomeVariavel) )
             {
-                print("ERRO: ['IDENTIFICADOR': $nomeVariavel, linha ${tab.get(i).linha}] já foi declarado")
+                print("ERRO: ['IDENTIFICADOR': $nomeVariavel, linha ${tab.get(indice).linha}] já foi declarado")
                 return false
             }
             else
@@ -169,10 +169,10 @@ class ControllerAnalisadorSintatico
                 //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
                 listaIdentificadores.add(nomeVariavel)//remover essa lista
                 listaProcedimentos.last.argumentos.add(Variavel(nomeVariavel, ""))
-                i++
-                if (tab.get(i).token.equals(","))
+                AUX_proximo()
+                if (tab.get(indice).token.equals(","))
                     return listaDeIdentificadores() //|id
-                else if (tab.get(i).token.equals(":"))
+                else if (tab.get(indice).token.equals(":"))
                     return true
                 else
                 {
@@ -181,7 +181,7 @@ class ControllerAnalisadorSintatico
                 }
             }
         }
-        else return false   /*se já declarou as variáveis, pode ser um begin|procedure*/
+        else return false   /*se já declarou as variáveis, pode ser um REGEX_begin|REGEX_procedure*/
     }
 
 
@@ -192,11 +192,11 @@ class ControllerAnalisadorSintatico
      */
     private fun declaracoesDeSubprogramas(): Boolean
     {
-        if (procedure())
+        if (REGEX_procedure())
         {
             return declaracaoDeSubprograma()
         }
-        else if(begin())
+        else if(REGEX_begin())
         {
             return true
         }
@@ -211,7 +211,7 @@ class ControllerAnalisadorSintatico
 
     /***
      *  declaração_de_subprograma →
-     *      procedure id argumentos;
+     *      REGEX_procedure id argumentos;
      *      declarações_variáveis
      *      declarações_de_subprogramas
      *      comando_composto
@@ -220,10 +220,10 @@ class ControllerAnalisadorSintatico
         if(procedureId())
         {
             /* Um procedimento pode ter var: no início do seu escopo    */
-            i++
+            AUX_proximo()
             if (declaracoesVariaveis())
             {
-                /*  após as declarações de variáveis e antes do begin, um procedimento pode conter um subprograma   */
+                /*  após as declarações de variáveis e antes do REGEX_begin, um procedimento pode conter um subprograma   */
                 if (declaracoesDeSubprogramas())
                 {
 
@@ -243,12 +243,12 @@ class ControllerAnalisadorSintatico
 
     private fun procedureId() : Boolean
     {
-        i++
-        if (identificador())
+        AUX_proximo()
+        if (REGEX_identificador())
         {
-            val nomeProcedimento = tab.get(i).token //procedimento só será salvo se passar nos testes
+            val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
             var novoProcedimento = Procedimento(nomeProcedimento)
-            i++
+            AUX_proximo()
             if (argumentos(novoProcedimento))
             {
                 /*****************************************************
@@ -273,7 +273,7 @@ class ControllerAnalisadorSintatico
                 return false
             }
         }
-        else if (begin())
+        else if (REGEX_begin())
         {
             return true
         }
@@ -288,9 +288,9 @@ class ControllerAnalisadorSintatico
      */
     private fun argumentos(procedimento: Procedimento) : Boolean
     {
-        if (tab.get(i).token.equals("("))   //tem lista de parâmetros
+        if (tab.get(indice).token.equals("("))   //tem lista de parâmetros
             return listaDeParametros(procedimento)
-        else if (tab.get(i).token.equals(";"))  //não tem lista de parâmetros
+        else if (tab.get(indice).token.equals(";"))  //não tem lista de parâmetros
             return true
         else
         {
@@ -301,31 +301,31 @@ class ControllerAnalisadorSintatico
 
     /***
      *  lista_de_parametros →
-     *      lista_de_identificadores: tipo
-     *      | lista_de_parametros; lista_de_identificadores: tipo
+     *      lista_de_identificadores: REGEX_tipo
+     *      | lista_de_parametros; lista_de_identificadores: REGEX_tipo
      */
     private fun listaDeParametros(procedimento: Procedimento): Boolean
     {
-        i++
-        if (var_()) //se for um 'var' pula, não interessa para o sintático no momento
-            i++
+        AUX_proximo()
+        if (REGEX_var()) //se for um 'var' pula, não interessa para o sintático no momento
+            AUX_proximo()
 
-        if (identificador())
+        if (REGEX_identificador())
         {
-            val nomeArgumento = tab.get(i).token
-            i++
-            if (tab.get(i).token.equals(":"))
+            val nomeArgumento = tab.get(indice).token
+            AUX_proximo()
+            if (tab.get(indice).token.equals(":"))
             {
-                i++
-                val tipoArgurmento = tab.get(i).token
-                if (tipo())
+                AUX_proximo()
+                val tipoArgurmento = tab.get(indice).token
+                if (REGEX_tipo())
                 {
-                    procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))//adiciona o tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
-                    i++
-                    if( tab.get(i).token.equals(")") )
+                    procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))//adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
+                    AUX_proximo()
+                    if( tab.get(indice).token.equals(")") )
                     {
-                        i++
-                        if (tab.get(i).token.equals(";"))
+                        AUX_proximo()
+                        if (tab.get(indice).token.equals(";"))
                             return true
                         else
                         {
@@ -334,7 +334,7 @@ class ControllerAnalisadorSintatico
                         }
                     }
                     //recursivamento valida os próximos argumentos
-                    else if (tab.get(i).token.equals(";"))
+                    else if (tab.get(indice).token.equals(";"))
                     {
                         return listaDeParametros(procedimento)
                     }
@@ -346,7 +346,7 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO: É esperado o tipo do argumento na linha")
+                    println("ERRO: É esperado o REGEX_tipo do argumento na linha")
                     return false
                 }
             }
@@ -367,17 +367,17 @@ class ControllerAnalisadorSintatico
     /*******************************************************************************************************************
      *                                   Atalhos para testar Regex                                                     *
      ******************************************************************************************************************/
-    private fun program() : Boolean = tab.get(i).token.matches(PROGRAM.toRegex())
+    private fun REGEX_program() : Boolean = tab.get(indice).token.matches(PROGRAM.toRegex())
 
-    private fun begin() : Boolean = tab.get(i).token.matches(BEGIN.toRegex())
+    private fun REGEX_begin() : Boolean = tab.get(indice).token.matches(BEGIN.toRegex())
 
-    private fun procedure() : Boolean = tab.get(i).token.matches(PROCEDURE.toRegex())
+    private fun REGEX_procedure() : Boolean = tab.get(indice).token.matches(PROCEDURE.toRegex())
 
-    private fun var_() : Boolean = tab.get(i).token.matches(VAR.toRegex())
+    private fun REGEX_var() : Boolean = tab.get(indice).token.matches(VAR.toRegex())
 
-    private fun identificador() : Boolean = tab.get(i).classificacao.equals("IDENTIFICADOR")
+    private fun REGEX_identificador() : Boolean = tab.get(indice).classificacao.equals("IDENTIFICADOR")
 
-    private fun tipo() : Boolean = tab.get(i).token.matches(TIPO.toRegex())
+    private fun REGEX_tipo() : Boolean = tab.get(indice).token.matches(TIPO.toRegex())
 
 
     /*******************************************************************************************************************
@@ -385,6 +385,7 @@ class ControllerAnalisadorSintatico
      ******************************************************************************************************************/
     private fun existeNaListaDeIdentificadores (identificador: String): Boolean
     {
+        var i = 0
         if (!listaProcedimentos.isNullOrEmpty())
             while( i < this.listaProcedimentos.last.argumentos.size)
                 if(identificador == listaProcedimentos.last.argumentos.get(i++).nome)
@@ -421,7 +422,7 @@ class ControllerAnalisadorSintatico
         return true
     }
 
-    private fun copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
+    private fun AUX_copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
     {
         this.tab = LinkedList()
         for(t in tabela)
@@ -429,5 +430,15 @@ class ControllerAnalisadorSintatico
                 this.tab.add(t)
     }
 
+    private fun AUX_proximo()
+    {
+        if (indice < tab.size-1)
+            indice++
+        else
+        {
+            println("ERRO: fim da leitura do programa antes do 'end.'")
+            System.exit(0)
+        }
+    }
 }
 
