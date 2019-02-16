@@ -17,6 +17,7 @@ class ControllerAnalisadorSintatico
     private val BEGIN = "begin|BEGIN"
     private val END = "end|END"
     private val VAR = "var|VAR"
+    private val ATRIBUICAO = ":="
     private val DO = "do|DO"
     private val WHILE = "while|WHILE"
     private val IF = "if|IF"
@@ -62,7 +63,6 @@ class ControllerAnalisadorSintatico
                     AUX_proximo()
                     if(this.declaracoesVariaveis())
                     {
-                        print("")
                         this.declaracoesDeSubprogramas()
                         //this.comandoComposto()
                     }
@@ -226,18 +226,33 @@ class ControllerAnalisadorSintatico
                 /*  após as declarações de variáveis e antes do REGEX_begin, um procedimento pode conter um subprograma   */
                 if (declaracoesDeSubprogramas())
                 {
-
+                    if(comandoComposto())
+                    {
+                        //eu acredito que pelo que estah PDF, aqui o retorno já vai ser o metodo comandoComposto no lugar do IF
+                        return true
+                    }
+                    else
+                    {
+                        println("ERRO: problema em comando composto")
+                        return false
+                    }
                 }
-                /*
-                comando composto
-                */
+                else
+                {
+                    println("ERRO: problema em declarações de Subprogramas")
+                    return false
+                }
             }
-
-            return true//pra tirar o erro por enquanto
+            else
+            {
+                println("ERRO: problema nas declarações de variáveis")
+                return false
+            }
         }
         else
         {
-            return false//pra tirar o erro por enquanto
+            println("ERRO: problema na declaração do procedimento")
+            return false
         }
     }
 
@@ -363,6 +378,260 @@ class ControllerAnalisadorSintatico
         }
     }
 
+    /***
+     *  comando_composto →
+     *      begin
+     *      comandos_opcionais
+     *      end
+     */
+    private fun comandoComposto():Boolean
+    {
+        AUX_proximo()
+        if (REGEX_begin())
+        {
+            AUX_proximo()
+            if(comandosOpcionais())
+            {
+                AUX_proximo()
+                if (REGEX_end())
+                {
+                    return true
+                }
+                else
+                {
+                    println("ERRO: é esperado um 'end' no fim do procedimento")
+                    return false
+                }
+            }
+            else
+            {
+                println("ERRO: problema nos comandos opcionais")
+                return false
+            }
+        }
+        else
+        {
+            println("ERRO: após declaração do método é esperado 'begin' para iniciar os comandos")
+            return false
+        }
+    }
+
+    /***
+     *  comandos_opcionais →
+     *      lista_de_comandos
+     *      | ε
+     */
+    private fun comandosOpcionais(): Boolean
+    {
+        /*  O procedimento pode ter uma lista de comandos ou ser vazio. se for vazio tem que ter um 'end'   */
+        if (REGEX_end())
+        {
+            indice--    //pq ele vai incrementar quando sair e vai testar o end novamente
+            return true
+        }
+        else if(listaDeComandos())
+            return true
+        else
+        {
+            println("ERRO: problema na lista de comandos")
+            return false
+        }
+    }
+
+    /***
+     *  lista_de_comandos →
+     *      comando
+     *      | lista_de_comandos; comando
+     */
+    private fun listaDeComandos(): Boolean
+    {
+        if(comando())
+            AUX_proximo()
+            if (!REGEX_end())
+                return listaDeComandos()
+        //se retornou falso nos IFs aciman então contém erro na lista de comandos.
+        println("ERRO: lista de comandos contém erro.")
+        return false
+    }
+
+    /***
+     *  comando →
+     *      variável := expressão
+     *      | ativação_de_procedimento
+     *      | comando_composto
+     *      | if expressão then comando parte_else
+     *      | while expressão do comando
+     */
+    private fun comando(): Boolean
+    {
+        //to do
+        if(variavel())
+        {
+            AUX_proximo()
+            if (REGEX_atribuicao())
+            {
+                if (expressao())
+                {
+                    return true//por enquanto
+                }
+            }
+        }
+        return true
+    }
+
+    /***
+     *  expressão →
+     *      expressão_simples
+     *      | expressão_simples op_relacional expressão_simples
+     */
+    private fun expressao(): Boolean
+    {
+        if(expressaoSimples())
+        {
+            if (opRelacional())
+            {
+                if (expressaoSimples())
+
+            }
+            return true
+        }
+        return true//pra tirar o erro
+    }
+
+    /***
+     *  expressão_simples →
+     *      termo
+     *      | sinal termo
+     *      | expressão_simples op_aditivo termo
+     */
+    private fun expressaoSimples(): Boolean
+    {
+        if(termo())
+        {
+
+        }
+        else if (sinal())
+        {
+            if(termo())
+            {
+                return true
+            }
+        }
+        else if (expressaoSimples())
+        {
+            if (opAditivo())
+            {
+                if (termo())
+                {
+                    return true
+                }
+            }
+        }
+    }
+
+    /***
+     *  ativação_de_procedimento →
+     *      id
+     *      | id (lista_de_expressões)
+     */
+    private fun ativacaoDeProcedimento()
+    {
+
+    }
+
+    /***
+     *  termo →
+     *      fator
+     *      | termo op_multiplicativo fator
+     */
+    private fun termo(): Boolean
+    {
+        if(fator())
+            if (opMultiplicativo())
+            return true
+        else
+    }
+
+    /***
+     *  fator →
+     *      id
+     *      | id(lista_de_expressões)
+     *      | num_int
+     *      | num_real
+     *      | true
+     *      | false
+     *      | (expressão)
+     *      | not fator
+     */
+    private fun fator(): Boolean {
+        if (REGEX_identificador())
+        {
+            AUX_proximo()
+            if (tab.get(indice).token.equals("("))
+            {
+                AUX_proximo()
+                if (listaDeExpressoes())
+            }
+        }
+    }
+
+    /***
+     *  lista_de_expressões →
+     *      expressão
+     *      | lista_de_expressões, expressão
+     */
+    private fun listaDeExpressoes(): Boolean {
+        if (expressao())
+        {
+            AUX_proximo()
+            if (listaDeExpressoes())
+            {
+
+            }
+        }
+    }
+
+    /***
+     *  variável →
+     *      id
+     */
+    private fun variavel(): Boolean {
+        return REGEX_identificador()
+    }
+
+    /***
+     *  op_aditivo →
+     *      + | - | or
+     */
+    private fun opAditivo(): Boolean {
+        return REGEX_operadorAditivo()
+    }
+
+    /***
+     *  op_multiplicativo →
+     *      * | / | and
+     */
+    private fun opMultiplicativo(): Boolean {
+        return REGEX_operadorMultiplicativo()
+    }
+
+    /***
+     *  op_relacional →
+     *      = | < | > | <= | >= | <>
+     */
+    private fun opRelacional(): Boolean {
+        return REGEX_operadorRelacional()
+    }
+
+    /***
+     *  sinal →
+     *      + | -
+     */
+    private fun sinal(): Boolean {
+        return REGEX_sinal()
+    }
+
+
 
     /*******************************************************************************************************************
      *                                   Atalhos para testar Regex                                                     *
@@ -379,6 +648,17 @@ class ControllerAnalisadorSintatico
 
     private fun REGEX_tipo() : Boolean = tab.get(indice).token.matches(TIPO.toRegex())
 
+    private fun REGEX_end() : Boolean = tab.get(indice).token.matches(END.toRegex())
+
+    private fun REGEX_atribuicao() : Boolean = tab.get(indice).classificacao.equals("ATRIBUICAO")
+
+    private fun REGEX_operadorAditivo() : Boolean = tab.get(indice).classificacao.equals("OPERADOR_ADITIVO")
+
+    private fun REGEX_operadorMultiplicativo() : Boolean = tab.get(indice).classificacao.equals("OPERADOR_MULTIPLICATIVO")
+
+    private fun REGEX_operadorRelacional() : Boolean = tab.get(indice).classificacao.equals("OPERADOR_RELACIONAL")
+
+    private fun REGEX_sinal() : Boolean = tab.get(indice).token.matches("+|-".toRegex())
 
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *
