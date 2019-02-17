@@ -386,13 +386,11 @@ class ControllerAnalisadorSintatico
      */
     private fun comandoComposto():Boolean
     {
-        AUX_proximo()
         if (REGEX_begin())
         {
             AUX_proximo()
             if(comandosOpcionais())
             {
-                AUX_proximo()
                 if (REGEX_end())
                 {
                     return true
@@ -423,18 +421,11 @@ class ControllerAnalisadorSintatico
      */
     private fun comandosOpcionais(): Boolean
     {
-        /*  O procedimento pode ter uma lista de comandos ou ser vazio. se for vazio tem que ter um 'end'   */
-        if (REGEX_end())
-        {
-            indice--    //pq ele vai incrementar quando sair e vai testar o end novamente
-            return true
-        }
-        else if(listaDeComandos())
+        if(listaDeComandos())
             return true
         else
         {
-            println("ERRO: problema na lista de comandos")
-            return false
+            return true
         }
     }
 
@@ -446,12 +437,20 @@ class ControllerAnalisadorSintatico
     private fun listaDeComandos(): Boolean
     {
         if(comando())
-            AUX_proximo()
-            if (!REGEX_end())
-                return listaDeComandos()
+        {
+            //após um comando vem um ';'
+            if (tab.get(indice).token.equals(";"))
+            {
+                AUX_proximo()
+                if( listaDeComandos() )
+                    return true
+            }
+        }
+        return true//E
+
         //se retornou falso nos IFs aciman então contém erro na lista de comandos.
-        println("ERRO: lista de comandos contém erro.")
-        return false
+        //println("ERRO: lista de comandos contém erro.")
+        //return false
     }
 
     /***
@@ -467,16 +466,23 @@ class ControllerAnalisadorSintatico
         //to do
         if(variavel())
         {
-            AUX_proximo()
-            if (REGEX_atribuicao())
+            //na verdade a variável pode ser um procedimento, já que procedimento também são identificadores
+            if (ativacaoDeProcedimento())
+                return true
+            else
             {
-                if (expressao())
+                AUX_proximo()
+                if (REGEX_atribuicao())
                 {
-                    return true//por enquanto
+                    AUX_proximo()
+                    return expressao()
                 }
             }
         }
-        return true
+        else if (comandoComposto())
+            return true
+
+        return false
     }
 
     /***
@@ -490,12 +496,11 @@ class ControllerAnalisadorSintatico
         {
             if (opRelacional())
             {
-                if (expressaoSimples())
-
+                return expressaoSimples()
             }
             return true
         }
-        return true//pra tirar o erro
+        return false
     }
 
     /***
@@ -508,25 +513,20 @@ class ControllerAnalisadorSintatico
     {
         if(termo())
         {
-
-        }
-        else if (sinal())
-        {
-            if(termo())
-            {
-                return true
-            }
-        }
-        else if (expressaoSimples())
-        {
             if (opAditivo())
             {
-                if (termo())
-                {
-                    return true
-                }
+                AUX_proximo()
+                return expressaoSimples()
             }
+            return true
         }
+        //o termo pode ser: um número que recebe um sinal negativo antes. exemplo: -4
+        else if (sinal())
+        {
+            return termo()
+        }
+        println("ERRO: é esperado pelo menos um termo")
+        return false
     }
 
     /***
@@ -534,9 +534,36 @@ class ControllerAnalisadorSintatico
      *      id
      *      | id (lista_de_expressões)
      */
-    private fun ativacaoDeProcedimento()
+    private fun ativacaoDeProcedimento() : Boolean
     {
-
+        if (REGEX_identificador())
+        {
+            AUX_proximo()
+            if (tab.get(indice).token.equals("("))
+            {
+                AUX_proximo()
+                if (listaDeExpressoes())
+                {
+                    if( tab.get(indice).token.equals(")") )
+                    {
+                        AUX_proximo()
+                        return true
+                    }
+                    else
+                    {
+                        println("ERRO: problema na sintax do procedimento")
+                        return false
+                    }
+                }
+            }
+            else
+            {
+                //então não é um procedimento. voltar e testar se é um identificador
+                indice--
+                return false
+            }
+        }
+        return false
     }
 
     /***
@@ -546,10 +573,22 @@ class ControllerAnalisadorSintatico
      */
     private fun termo(): Boolean
     {
+        /*
+            pode ser apenas um fator. Se tiver um opMultiplicativo depois, então tem que ter um termo depois
+            ,senão pode retornar true pois é apenas um fator.
+         */
         if(fator())
+        {
+            AUX_proximo()
             if (opMultiplicativo())
+            {
+                AUX_proximo()
+                return termo()
+            }
             return true
-        else
+        }
+        println("ERRO: problema no termo")
+        return false
     }
 
     /***
@@ -571,7 +610,50 @@ class ControllerAnalisadorSintatico
             {
                 AUX_proximo()
                 if (listaDeExpressoes())
+                {
+                    //se abriu tem que fechar
+                    AUX_proximo()
+                    if (tab.get(indice).token.equals(")"))
+                    {
+                        AUX_proximo()
+                        return true
+                    }
+                }
             }
+            //tem que decrementar porque quando voltar vai incrementar novamente
+            indice--
+            return true
+        }
+        else if (REGEX_numInt())
+            return true
+        else if (REGEX_numReal())
+            return true
+        else if (REGEX_true())
+            return true
+        else if (REGEX_false())
+            return true
+        else if ( tab.get(indice).token.equals("(") )
+        {
+            AUX_proximo()
+            if (expressao())
+            {
+                return tab.get(indice).token.equals(")")
+            }
+            else
+            {
+                println("ERRO: problema no fator -> (expressão)")
+                return false
+            }
+        }
+        else if (REGEX_not())
+        {
+            AUX_proximo()
+            return fator()
+        }
+        else
+        {
+            println("ERRO: problema no fator.")
+            return false
         }
     }
 
@@ -584,11 +666,14 @@ class ControllerAnalisadorSintatico
         if (expressao())
         {
             AUX_proximo()
-            if (listaDeExpressoes())
-            {
-
-            }
+            if (tab.get(indice).token.equals(","))
+                return listaDeExpressoes()
+            indice--
+            return true
         }
+
+        println("ERRO: problema na lista de expressões.")
+        return false
     }
 
     /***
@@ -658,7 +743,17 @@ class ControllerAnalisadorSintatico
 
     private fun REGEX_operadorRelacional() : Boolean = tab.get(indice).classificacao.equals("OPERADOR_RELACIONAL")
 
-    private fun REGEX_sinal() : Boolean = tab.get(indice).token.matches("+|-".toRegex())
+    private fun REGEX_sinal() : Boolean = tab.get(indice).token.matches("\\+|\\-".toRegex())
+
+    private fun REGEX_numInt() : Boolean = tab.get(indice).classificacao.equals("NUMERO_INTEIRO")
+
+    private fun REGEX_numReal() : Boolean = tab.get(indice).classificacao.equals("NUMERO_REAL")
+
+    private fun REGEX_true() : Boolean = tab.get(indice).token.matches(TRUE.toRegex())
+
+    private fun REGEX_false() : Boolean = tab.get(indice).token.matches(FALSE.toRegex())
+
+    private fun REGEX_not(): Boolean = tab.get(indice).token.matches(NOT.toRegex())
 
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *

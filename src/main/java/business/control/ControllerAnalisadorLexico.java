@@ -70,12 +70,12 @@ public class ControllerAnalisadorLexico {
                     if (linha.substring(i, j-1).matches( Lexico.NUMEROS_INTEIROS ))
                     {
                         tabela.add( new Simbolo ( linha.substring(i, j-1), "NUMERO_INTEIRO", l+1 ) );
-                        i = j;
+                        i = j-1;
                     }
                     else if (linha.substring(i, j-1).matches( Lexico.NUMEROS_REAIS ))
                     {
                         tabela.add( new Simbolo ( linha.substring(i, j-1), "NUMERO_REAL", l+1 ) );
-                        i = j;
+                        i = j-1;
                     }
                 }
                 //OPERADOR aditivo
@@ -104,7 +104,7 @@ public class ControllerAnalisadorLexico {
                 {
                     if (   i+2 <= tamanhoLinha && ( linha.substring(i, i+2).matches( Lexico.ATRIBUICAO ) )   )
                     {
-                        tabela.add( new Simbolo ( linha.substring(i, i+2), "ATRIBUIÇÃO", l+1 ) );
+                        tabela.add( new Simbolo ( linha.substring(i, i+2), "ATRIBUICAO", l+1 ) );
                         i = i + 2;
                     }
                     else
