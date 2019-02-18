@@ -63,15 +63,24 @@ class ControllerAnalisadorSintatico
                     AUX_proximo()
                     if(this.declaracoesVariaveis())
                     {
-                        this.declaracoesDeSubprogramas()
-                        //this.comandoComposto()
+                        if (this.declaracoesDeSubprogramas())
+                        {
+                            if (this.comandoComposto())
+                            {
+                                if (tab.get(indice).token.equals("."))
+                                    println("O PROGRAMA PASSOU NO TESTE DO SINTÁTICO")
+                                else println("ERRO: ao final do program é esperado um '.'")
+                            }
+                        }
+                        else println("ERRO: problema nas declarações de Subprogramas")
                     }
+                    else println("ERRO: problema nas declarações de variáveis")
                 }
-                else print("ERRO: é esperado um ';' na linha ${tab.get(indice).linha}")
+                else println("ERRO: é esperado um ';' na linha ${tab.get(indice).linha}")
             }
-            else print("ERRO: é esperado um 'IDENTIFICADOR' para o REGEX_program, na linha ${tab.get(indice).linha} ")
+            else println("ERRO: é esperado um 'IDENTIFICADOR' para o REGEX_program, na linha ${tab.get(indice).linha} ")
         }
-        else print("ERRO: é esperado a 'PALAVRA_RESERVADA'  REGEX_program no início, na linha ${tab.get(indice).linha} ")
+        else println("ERRO: é esperado a 'PALAVRA_RESERVADA'  REGEX_program no início, na linha ${tab.get(indice).linha} ")
     }
 
 
@@ -136,7 +145,7 @@ class ControllerAnalisadorSintatico
         else
         {   //como encontrou um VAR, entao tem que ter uma lista de variaveis.
             print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
-            return false   /*houve algum erro na lista de identificadores*/
+            return false
         }
     }
 
@@ -192,26 +201,25 @@ class ControllerAnalisadorSintatico
      */
     private fun declaracoesDeSubprogramas(): Boolean
     {
-        if (REGEX_procedure())
+        if (declaracaoDeSubprograma())
         {
-            return declaracaoDeSubprograma()
+            if (tab.get(indice).token.equals(";")) {
+                AUX_proximo()
+                return declaracoesDeSubprogramas()
+            }
         }
         else if(REGEX_begin())
         {
             return true
         }
-        else
-        {
-            println("ERRO: é esperado um 'BEGIN' ou 'PROCEDURE'")
-            return false
-        }
-
+        //print("pode ser um .???")
+        return true
     }
 
 
     /***
      *  declaração_de_subprograma →
-     *      REGEX_procedure id argumentos;
+     *      procedure id argumentos;
      *      declarações_variáveis
      *      declarações_de_subprogramas
      *      comando_composto
@@ -228,8 +236,7 @@ class ControllerAnalisadorSintatico
                 {
                     if(comandoComposto())
                     {
-                        //eu acredito que pelo que estah PDF, aqui o retorno já vai ser o metodo comandoComposto no lugar do IF
-                        return true
+                       return true
                     }
                     else
                     {
@@ -249,48 +256,47 @@ class ControllerAnalisadorSintatico
                 return false
             }
         }
-        else
-        {
-            println("ERRO: problema na declaração do procedimento")
-            return false
-        }
+        return false
     }
 
     private fun procedureId() : Boolean
     {
-        AUX_proximo()
-        if (REGEX_identificador())
+        if (REGEX_procedure())
         {
-            val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
-            var novoProcedimento = Procedimento(nomeProcedimento)
             AUX_proximo()
-            if (argumentos(novoProcedimento))
+            if (REGEX_identificador())
             {
-                /*****************************************************
-                 *
-                 * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
-                 *
-                 *****************************************************/
-                if (existeNaListaDeProcedimentos(novoProcedimento))
+                val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
+                var novoProcedimento = Procedimento(nomeProcedimento)
+                AUX_proximo()
+                if (argumentos(novoProcedimento))
                 {
-                    println("ERRO: O procedimento já existe com mesmo nome e argumentos")
+                    /*****************************************************
+                     *
+                     * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
+                     *
+                     *****************************************************/
+                    if (existeNaListaDeProcedimentos(novoProcedimento))
+                    {
+                        println("ERRO: O procedimento já existe com mesmo nome e argumentos")
+                        return false
+                    }
+                    else
+                    {
+                        listaProcedimentos.add(novoProcedimento)
+                        return true
+                    }
+                }
+                else    //houve um erro na lista de argumentos
+                {
+                    println("ERRO: problema na lista de argumentos")
                     return false
                 }
-                else
-                {
-                    listaProcedimentos.add(novoProcedimento)
-                    return true
-                }
             }
-            else    //houve um erro na lista de argumentos
+            else if (REGEX_begin())
             {
-                println("ERRO: problema na lista de argumentos")
-                return false
+                return true
             }
-        }
-        else if (REGEX_begin())
-        {
-            return true
         }
 
         return false
@@ -393,7 +399,18 @@ class ControllerAnalisadorSintatico
             {
                 if (REGEX_end())
                 {
+                    AUX_proximo()
                     return true
+                    /*if (tab.get(indice).token.equals(";"))
+                    {
+                        AUX_proximo()
+                        return true
+                    }
+                    else
+                    {
+                        println("após todos os comandos compostos e o 'end', é esperado um ';'")
+                        return false
+                    }*/
                 }
                 else
                 {
@@ -442,7 +459,9 @@ class ControllerAnalisadorSintatico
             if (tab.get(indice).token.equals(";"))
             {
                 AUX_proximo()
-                if( listaDeComandos() )
+                if (REGEX_end())
+                    return true
+                else if ( listaDeComandos() )
                     return true
             }
         }
