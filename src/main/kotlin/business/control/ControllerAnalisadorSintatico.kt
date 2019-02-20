@@ -27,6 +27,10 @@ class ControllerAnalisadorSintatico
     private val FALSE = "false|FALSE"
     private val NOT = "not|NOT"
 
+    //FEITO EM SALA
+    private val CASE = "case|CASE"
+    private val OF = "of|OF"
+
     //exclusivamente um REGEX_tipo de uma variável
     private val TIPO = "integer|INTEGER|real|REAL|boolean|BOOLEAN|char|CHAR"
 
@@ -424,11 +428,7 @@ class ControllerAnalisadorSintatico
                 return false
             }
         }
-        else
-        {
-            println("ERRO: após declaração do método é esperado 'begin' para iniciar os comandos")
-            return false
-        }
+        return false
     }
 
     /***
@@ -465,11 +465,8 @@ class ControllerAnalisadorSintatico
                     return true
             }
         }
-        return true//E
-
-        //se retornou falso nos IFs aciman então contém erro na lista de comandos.
-        //println("ERRO: lista de comandos contém erro.")
-        //return false
+        println("ERRO: problema na lista de comandos.")
+        return false//ou é E, false??
     }
 
     /***
@@ -500,9 +497,130 @@ class ControllerAnalisadorSintatico
         }
         else if (comandoComposto())
             return true
+        else if (REGEX_if())
+        {
+            AUX_proximo()
+            if (expressao())
+            {
+                if (REGEX_then())
+                {
+                    AUX_proximo()
+                    if (comando())
+                    {
+                        AUX_proximo()
+                        if(REGEX_else())
+                        {
+                            AUX_proximo()
+                            return (comando())
+                        }
+                        else {
+                            AUX_proximo()
+                            return true
 
+                        }
+                    }
+                }
+            }
+        }
+        else if(REGEX_while())
+        {
+            AUX_proximo()
+            if (expressao())
+            {
+                if (REGEX_do())
+                {
+                    AUX_proximo()
+                    return comando()
+                }
+            }
+        }
+        //FEITO NA SALA
+        else if (REGEX_case())
+        {
+            AUX_proximo()
+            if (seletor())
+            {
+                AUX_proximo()
+                if (REGEX_of())
+                {
+                    AUX_proximo()
+                    if (listaSeletor()) {
+                        if (REGEX_else()) {
+                            AUX_proximo()
+                            if (tab.get(indice).token.equals(":"))
+                            {
+                                AUX_proximo()
+                                return (comando())
+                            } else {
+                                println("ERRO: problema de sintaxe no 'case', após o else é esperado um ':'")
+                                return false
+                            }
+                        } else {
+                            println("ERRO: problema de sintaxe no 'case', é esperado um 'else' após a lista do case")
+                            return false
+                        }
+                    }
+                }
+                else
+                {
+                    println("ERRO: problema de sintaxe no 'case', é esperado um 'of' após um número")
+                    return false
+                }
+            }
+            else
+            {
+                println("ERRO: problema de sintaxe no 'case', é esperado um número após o case")
+                return false
+            }
+        }
         return false
     }
+
+    private fun listaSeletor(): Boolean
+    {
+        if (seletor())
+        {
+            AUX_proximo()
+            if (tab.get(indice).token.equals(":"))
+            {
+                AUX_proximo()
+                if (comando())
+                {
+                    if (tab.get(indice).token.equals(";"))
+                    {
+                        AUX_proximo()
+                        if (seletor())
+                            return listaSeletor()
+                        else
+                            return true
+                    }
+                    else
+                    {
+                        println("ERRO: problema de sintaxe no 'case', é esperado um ';' após o comando do case seletor")
+                        return false
+                    }
+                }
+                else
+                {
+                    println("ERRO: problema de sintaxe no 'case', problema no 'else'")
+                    return false
+                }
+            }
+            else
+            {
+                println("ERRO: problema de sintaxe no 'case', após o seletor é esperado um ':''")
+                return false
+            }
+        }
+        else
+        {
+            println("ERRO: problema de sintaxe no 'case', é esperado uma lista de seletores do case")
+            return false
+        }
+    }
+
+    //FEITO EM SALA
+    private fun seletor(): Boolean = REGEX_numInt() || REGEX_numReal()
 
     /***
      *  expressão →
@@ -515,6 +633,7 @@ class ControllerAnalisadorSintatico
         {
             if (opRelacional())
             {
+                AUX_proximo()
                 return expressaoSimples()
             }
             return true
@@ -754,6 +873,16 @@ class ControllerAnalisadorSintatico
 
     private fun REGEX_end() : Boolean = tab.get(indice).token.matches(END.toRegex())
 
+    private fun REGEX_if() : Boolean = tab.get(indice).token.matches(IF.toRegex())
+
+    private fun REGEX_then() : Boolean = tab.get(indice).token.matches(THEN.toRegex())
+
+    private fun REGEX_else() : Boolean = tab.get(indice).token.matches(ELSE.toRegex())
+
+    private fun REGEX_while() : Boolean = tab.get(indice).token.matches(WHILE.toRegex())
+
+    private fun REGEX_do() : Boolean = tab.get(indice).token.matches(DO.toRegex())
+
     private fun REGEX_atribuicao() : Boolean = tab.get(indice).classificacao.equals("ATRIBUICAO")
 
     private fun REGEX_operadorAditivo() : Boolean = tab.get(indice).classificacao.equals("OPERADOR_ADITIVO")
@@ -773,6 +902,10 @@ class ControllerAnalisadorSintatico
     private fun REGEX_false() : Boolean = tab.get(indice).token.matches(FALSE.toRegex())
 
     private fun REGEX_not(): Boolean = tab.get(indice).token.matches(NOT.toRegex())
+
+    //FEITO NA SALA
+    private fun REGEX_case(): Boolean = tab.get(indice).token.matches(CASE.toRegex())
+    private fun REGEX_of(): Boolean = tab.get(indice).token.matches(OF.toRegex())
 
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *
