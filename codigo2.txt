@@ -1,24 +1,36 @@
-program teste; {programa 1 _)T ; @#  exemplo}
+{comentario certo}
+program teste;
 var
     y:real;
-
 procedure adicao(var x:real; z:integer);
 		var
             a, b: real;
-        procedure adicao2;
+        procedure repeticao;
                 var
-                    x, a, b: real;
+                    i: integer;
                 begin
-                    a:=1;
-                    b:=2;
-                    x:=a+b;
-                    writeln(x);
+                    //FEITO NA SALA
+                    case 2 of
+                        1: i := 6;
+                        2: i := 1;
+                    else:
+                        i := 0;
+
+                    while i < 6 do
+                    begin
+                        writeln (a);
+                        i := i + 1;
+                    end;
                 end;
 		begin
             a:=1;
             b:=2;
-			x:=a+b;
-			writeln(x);
+            if a > b then
+                begin
+                a:= 5;
+                end;
+            else
+			    writeln(a);
 		end;
 
 begin

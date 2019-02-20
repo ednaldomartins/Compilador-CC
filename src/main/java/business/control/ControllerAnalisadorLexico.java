@@ -27,11 +27,19 @@ public class ControllerAnalisadorLexico {
                 else if (   i+1 <= tamanhoLinha && ( "{".equals(linha.substring(i, i+1)) || "/".equals(linha.substring(i, i+1)) )   )
                 {
                     int j = i + 1;
-                    while(   j < tamanhoLinha && (!"}".equals(linha.substring(i, j)))   ) {j++;}
+                    while(   j < tamanhoLinha && (!"}".equals(linha.substring(i, j)))   )
+                    {
+                        j++;
+                    }
                     if (j <= tamanhoLinha && (linha.substring(i, j).matches(Lexico.COMENTARIO) || linha.substring(i, j).matches(Lexico.COMENTARIO_AULA) ))
                     {
                         tabela.add( new Simbolo ( linha.substring(i, j), "COMENTARIO", l+1 ) );
                         i = j;
+                    }
+                    else
+                    {
+                        System.out.println("erro no comentario");
+                        System.exit(0);
                     }
                 }
                 //PALAVRA
