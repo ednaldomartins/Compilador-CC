@@ -405,16 +405,6 @@ class ControllerAnalisadorSintatico
                 {
                     AUX_proximo()
                     return true
-                    /*if (tab.get(indice).token.equals(";"))
-                    {
-                        AUX_proximo()
-                        return true
-                    }
-                    else
-                    {
-                        println("após todos os comandos compostos e o 'end', é esperado um ';'")
-                        return false
-                    }*/
                 }
                 else
                 {
