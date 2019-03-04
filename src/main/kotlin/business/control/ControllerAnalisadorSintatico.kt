@@ -1,5 +1,7 @@
 package business.control
 
+import business.model.AnalisadorSemantico as Semantico
+import business.model.Identificador
 import business.model.Procedimento
 import business.model.Simbolo
 import business.model.Variavel
@@ -11,6 +13,7 @@ class ControllerAnalisadorSintatico
     lateinit var tab: LinkedList<Simbolo>
     lateinit var listaIdentificadores: LinkedList<String>
     lateinit var listaProcedimentos: LinkedList<Procedimento>
+    lateinit var identificadorAtual: Identificador
 
     private val PROGRAM = "program|PROGRAM"
     private val PROCEDURE = "procedure|PROCEDURE"
@@ -38,6 +41,7 @@ class ControllerAnalisadorSintatico
     fun analisar(tabela: LinkedList<Simbolo>)
     {
         AUX_copiarTabelaSemComentarios(tabela)
+        identificadorAtual = Identificador()
         listaIdentificadores = LinkedList()
         listaProcedimentos = LinkedList()
         programId()
@@ -56,11 +60,15 @@ class ControllerAnalisadorSintatico
         if(REGEX_program())
         {
             AUX_proximo()
-            val nomeDoPrograma = tab.get(indice).token
+            identificadorAtual.nome = tab.get(indice).token
+            identificadorAtual.tipo = tab.get(indice-1).token
+            //val nomeDoPrograma = tab.get(indice).token
+            //val tipoDoPrograma = tab.get(indice-1).token
             if (REGEX_identificador())
             {
-                listaIdentificadores.add(nomeDoPrograma)
-                listaProcedimentos.add(Procedimento(nomeDoPrograma))
+                Semantico.analisaProcedimento(identificadorAtual)
+                //listaIdentificadores.add(nomeDoPrograma)
+                //listaProcedimentos.add(Procedimento(nomeDoPrograma))
                 AUX_proximo()
                 if (tab.get(indice).token.equals(";"))
                 {
@@ -113,12 +121,16 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (REGEX_tipo())
             {
-                /*  definir o REGEX_tipo em todas as variaveis que foram declaradas  */
+                /*  definir o REGEX_tipo em todas as variaveis que foram declaradas  TO FAZENDO NO SEMANTICO
                 var j = listaProcedimentos.last.argumentos.size - 1
                 while (j >= 0 && listaProcedimentos.last.argumentos.get(j).tipo == "")
                 {
                     listaProcedimentos.last.argumentos.get(j--).tipo = tab.get(indice).token
                 }
+                */
+
+                //O Semântico vai definir os tipos das variáveis que foram declaradas nesse trecho.
+                Semantico.definirTipoDasVariaveis(tab.get(indice).token)
                 AUX_proximo()
                 if(tab.get(indice).token.equals(";"))
                 {
@@ -136,7 +148,7 @@ class ControllerAnalisadorSintatico
                 return false
             }
         }
-        else if(!this.listaIdentificadores.isNullOrEmpty())
+        else if(!Semantico.pilhaVazia())
         {
             if(REGEX_begin() || REGEX_procedure())
                 return true
@@ -161,7 +173,7 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeIdentificadores() : Boolean
     {
-        //verificar se é um 'IDENTIFICADOR'
+        //pular, porque os metodos que chamam listaDeIdentificadores ou veio de um ';' ou de um 'var'
         AUX_proximo()
         if (REGEX_identificador())
         {
@@ -171,6 +183,8 @@ class ControllerAnalisadorSintatico
              *
              *****************************************************/
             //verificar se já existe um REGEX_identificador declarado com o mesmo nome
+
+            /*
             val nomeVariavel = tab.get(indice).token
             if( existeNaListaDeIdentificadores(nomeVariavel) )
             {
@@ -181,7 +195,7 @@ class ControllerAnalisadorSintatico
             {
                 //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
                 listaIdentificadores.add(nomeVariavel)//remover essa lista
-                listaProcedimentos.last.argumentos.add(Variavel(nomeVariavel, ""))
+                //listaProcedimentos.last.argumentos.add(Variavel(nomeVariavel, ""))
                 AUX_proximo()
                 if (tab.get(indice).token.equals(","))
                     return listaDeIdentificadores() //|id
@@ -193,6 +207,27 @@ class ControllerAnalisadorSintatico
                     return false
                 }
             }
+            */
+
+            //limpar informação do identificador anterior
+            identificadorAtual = Identificador()
+            identificadorAtual.nome = tab.get(indice).token
+            //O Analisador Semântico vai analisar se a variável já foi declarada no escopo do próprio procedimento
+            if (Semantico.analisaIdentificador(identificadorAtual))
+            {
+                AUX_proximo()
+                if (tab.get(indice).token.equals(","))
+                    return listaDeIdentificadores() //|id
+                else if (tab.get(indice).token.equals(":"))
+                    return true
+                else
+                {
+                    print("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado.")
+                    return false
+                }
+            }
+            else
+                return false
         }
         else return false   /*se já declarou as variáveis, pode ser um REGEX_begin|REGEX_procedure*/
     }
@@ -268,12 +303,42 @@ class ControllerAnalisadorSintatico
         if (REGEX_procedure())
         {
             AUX_proximo()
+            //Guardar e enviar o nome do procedimento e seu tipo 'procedure'
+            identificadorAtual = Identificador()
+            identificadorAtual.nome = tab.get(indice).token
+            identificadorAtual.tipo = tab.get(indice-1).token
             if (REGEX_identificador())
             {
-                val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
-                var novoProcedimento = Procedimento(nomeProcedimento)
+                //analisar procedimento e adicionar a pilha
+                if ( Semantico.analisaProcedimento(identificadorAtual) )
+                {
+                    AUX_proximo()
+                    if (argumentos())
+                    {
+                        return true
+                    }
+                    //houve um erro na lista de argumentos
+                    else
+                    {
+                        println("ERRO SINTÁTICO: problema na lista de argumentos")
+                        return false
+                    }
+                }
+                else
+                {
+                    println("ERRO SEMÂNTICO: problema na declaração do procedimento")
+                    return false
+                }
+
+                //val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
+                //var novoProcedimento = Procedimento(nomeProcedimento)
+
+
+
+                /*
                 AUX_proximo()
-                if (argumentos(novoProcedimento))
+
+                if (argumentos(identificadorAtual))
                 {
                     /*****************************************************
                      *
@@ -296,6 +361,7 @@ class ControllerAnalisadorSintatico
                     println("ERRO: problema na lista de argumentos")
                     return false
                 }
+                */
             }
             else if (REGEX_begin())
             {
@@ -311,10 +377,10 @@ class ControllerAnalisadorSintatico
      *      (lista_de_parametros)
      *      | ε
      */
-    private fun argumentos(procedimento: Procedimento) : Boolean
+    private fun argumentos() : Boolean
     {
         if (tab.get(indice).token.equals("("))   //tem lista de parâmetros
-            return listaDeParametros(procedimento)
+            return listaDeParametros()
         else if (tab.get(indice).token.equals(";"))  //não tem lista de parâmetros
             return true
         else
@@ -329,23 +395,33 @@ class ControllerAnalisadorSintatico
      *      lista_de_identificadores: REGEX_tipo
      *      | lista_de_parametros; lista_de_identificadores: REGEX_tipo
      */
-    private fun listaDeParametros(procedimento: Procedimento): Boolean
+    private fun listaDeParametros(): Boolean
     {
         AUX_proximo()
-        if (REGEX_var()) //se for um 'var' pula, não interessa para o sintático no momento
-            AUX_proximo()
+        //se for um 'var' pula, não interessa para o sintático no momento
+        //if (REGEX_var())
+        //    AUX_proximo()
 
-        if (REGEX_identificador())
+        //if (REGEX_identificador())
+        if (listaDeIdentificadores())
         {
-            val nomeArgumento = tab.get(indice).token
-            AUX_proximo()
+            /**OBS: teste. se voltar de lista de identificadores entao ja leu todos ids e agora veio um : e depois um tipo**/
+            //envia variável para o Semântico, mas ainda sem o seu tipo.
+            //identificadorAtual = Identificador()
+            //identificadorAtual.nome = tab.get(indice).token
+            //Semantico.analisaIdentificador(identificadorAtual)
+            //val nomeArgumento = tab.get(indice).token
+            //AUX_proximo()
             if (tab.get(indice).token.equals(":"))
             {
                 AUX_proximo()
                 val tipoArgurmento = tab.get(indice).token
                 if (REGEX_tipo())
                 {
-                    procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))//adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
+                    //agora definir o tipo das variáveis que foram declaradas
+                    Semantico.definirTipoDasVariaveis(tipoArgurmento)
+
+                    /**procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))**///adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
                     AUX_proximo()
                     if( tab.get(indice).token.equals(")") )
                     {
@@ -361,7 +437,9 @@ class ControllerAnalisadorSintatico
                     //recursivamento valida os próximos argumentos
                     else if (tab.get(indice).token.equals(";"))
                     {
-                        return listaDeParametros(procedimento)
+                        //voltar pq quando entrar em lista de parametros vai pular
+                        indice--
+                        return listaDeParametros()
                     }
                     else
                     {
