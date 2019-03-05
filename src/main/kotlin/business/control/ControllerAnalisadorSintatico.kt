@@ -2,9 +2,7 @@ package business.control
 
 import business.model.AnalisadorSemantico as Semantico
 import business.model.Identificador
-import business.model.Procedimento
 import business.model.Simbolo
-import business.model.Variavel
 import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
@@ -12,7 +10,6 @@ class ControllerAnalisadorSintatico
     var indice: Int = 0
     lateinit var tab: LinkedList<Simbolo>
     lateinit var listaIdentificadores: LinkedList<String>
-    lateinit var listaProcedimentos: LinkedList<Procedimento>
     lateinit var identificadorAtual: Identificador
 
     private val PROGRAM = "program|PROGRAM"
@@ -43,7 +40,6 @@ class ControllerAnalisadorSintatico
         AUX_copiarTabelaSemComentarios(tabela)
         identificadorAtual = Identificador()
         listaIdentificadores = LinkedList()
-        listaProcedimentos = LinkedList()
         programId()
     }
 
@@ -476,11 +472,15 @@ class ControllerAnalisadorSintatico
     {
         if (REGEX_begin())
         {
+            //SEMÂNTICO: incrementa quando encontra um begin, para aumentar a profundidade do escopo
+            Semantico.abreEscopo()
             AUX_proximo()
             if(comandosOpcionais())
             {
                 if (REGEX_end())
                 {
+                    //SEMÂNTICO: decrementa quando encontra um end, para diminui a profundidade do escopo
+                    Semantico.fechaEscopo()
                     AUX_proximo()
                     return true
                 }
@@ -978,6 +978,7 @@ class ControllerAnalisadorSintatico
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *
      ******************************************************************************************************************/
+    /*
     private fun existeNaListaDeIdentificadores (identificador: String): Boolean
     {
         var i = 0
@@ -988,6 +989,7 @@ class ControllerAnalisadorSintatico
 
         return false
     }
+
 
     private fun existeNaListaDeProcedimentos (procedimento: Procedimento): Boolean
     {
@@ -1017,6 +1019,7 @@ class ControllerAnalisadorSintatico
         return true
     }
 
+*/
     private fun AUX_copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
     {
         this.tab = LinkedList()
