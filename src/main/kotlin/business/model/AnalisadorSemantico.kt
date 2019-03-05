@@ -12,7 +12,7 @@ class AnalisadorSemantico
          *
          * profundidadeEscopo é incrementado sempre que o token no código é o 'BEGIN', e decrementado quando o token no
          * código é o 'END', logo quando (profundidadeEscopo > 0) então estamos em uma parte do código onde variáveis ou
-         * procedimentos não podem ser declarados.
+         * procedimentos não podem ser declarado, mas podem ser usado.
          */
         private var listaIdentificadores: LinkedList<Identificador> = LinkedList()
         private var profundidadeEscopo:Int = 0
@@ -20,32 +20,17 @@ class AnalisadorSemantico
         /**
          *
          */
-        @JvmStatic fun analisaIdentificador(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaIdentificador(identificador) else empilhaIdentificador(identificador)
-
-        private fun buscaIdentificador(identificador: Identificador): Boolean
-        {
-            return true
-        }
-
-        private fun empilhaIdentificador(identificador: Identificador): Boolean
-        {
-            return true
-        }
-
-        private fun desempilhaIdentificador(): Boolean
-        {
-            return true
-        }
-
+        @JvmStatic fun analisaIdentificador(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaIdentificador(identificador) else empilhaVariavel(identificador)
 
         /**
          *
          */
-        @JvmStatic fun analisaProcedimento(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaProcedimento(identificador) else empilhaProcedimento(identificador)
+        @JvmStatic fun analisaProcedimento(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaIdentificador(identificador) else empilhaProcedimento(identificador)
 
-        private fun buscaProcedimento(identificador: Identificador): Boolean
+
+        private fun buscaIdentificador(identificador: Identificador): Boolean
         {
-            //A leitura da pilha começa de cima para baixo, logo os últimos identificadores são os primeiros.
+            //A leitura da pilha começa de cima para baixo, logo os últimos identificadores declarados são os primeiros.
             var i:Int = 0
             while (listaIdentificadores.get(i).nome != "#")
             {
@@ -56,12 +41,24 @@ class AnalisadorSemantico
             return false
         }
 
+        private fun empilhaVariavel(identificador: Identificador): Boolean
+        {
+            //se a variavel já foi declarada dentro do mesmo escopo, então retorna erro
+            if (buscaIdentificador(identificador))
+            {
+                println("ERRO SEMÂNTICO: Erro inesperado. Problema no tipo do procedimento ou programa. Como isso chegou aqui???!!!")
+                return false
+            }
+            listaIdentificadores.push(identificador)
+            return true
+        }
+
         private fun empilhaProcedimento(identificador: Identificador): Boolean
         {
             if (identificador.tipo.equals("procedure"))
             {
                 //se já existe procedimento ou programa com o mesmo nome então não pode adicionar a pilha. retorna erro
-                if (buscaProcedimento(identificador))
+                if (buscaIdentificador(identificador))
                 {
                     println("ERRO SEMÂNTICO: Esse nome já foi usado como identificador de um outro procedimento nesse mesmo escopo")
                     return false
@@ -89,9 +86,13 @@ class AnalisadorSemantico
             }
         }
 
-        private fun desempilhaProcedimento(): Boolean
+        private fun desempilhaProcedimento()
         {
-            return true
+            //Desempilha a partir do topo da pilha
+            while (listaIdentificadores.first.nome != "#")
+                listaIdentificadores.pop()
+            //Desempilha o marcador '#'
+            listaIdentificadores.pop()
         }
 
         /***
@@ -99,18 +100,24 @@ class AnalisadorSemantico
          */
         @JvmStatic fun definirTipoDasVariaveis (tipo:String)
         {
-            var i = listaIdentificadores.size - 1
-            while (i > 0 && listaIdentificadores.get(i).tipo.equals(""))
-                listaIdentificadores.get(i--).tipo = tipo
+            var i:Int = 0
+            while (i < listaIdentificadores.size-1 && listaIdentificadores.get(i).tipo.equals(""))
+                listaIdentificadores.get(i++).tipo = tipo
+        }
+
+        @JvmStatic fun abreEscopo()
+        {
+            profundidadeEscopo++
+        }
+
+        @JvmStatic fun fechaEscopo()
+        {
+            profundidadeEscopo--
+            if (profundidadeEscopo == 0)
+                desempilhaProcedimento()
         }
 
         @JvmStatic fun pilhaVazia(): Boolean = this.listaIdentificadores.isNullOrEmpty()
-
     }
-
-}
-
-fun main()
-{
 
 }
