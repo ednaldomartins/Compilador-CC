@@ -209,7 +209,7 @@ class ControllerAnalisadorSintatico
             identificadorAtual = Identificador()
             identificadorAtual.nome = tab.get(indice).token
             //O Analisador Semântico vai analisar se a variável já foi declarada no escopo do próprio procedimento
-            if (Semantico.analisaIdentificador(identificadorAtual))
+            if (Semantico.analisaVariavel(identificadorAtual))
             {
                 AUX_proximo()
                 if (tab.get(indice).token.equals(","))
