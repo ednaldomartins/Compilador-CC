@@ -14,29 +14,103 @@ class AnalisadorSemantico
          * no código é o 'END', logo quando (profundidadeEscopo > 0) então estamos em uma parte do código onde         *
          * variáveis ou procedimentos não podem ser declarado, mas podem ser usado.                                    *
          **************************************************************************************************************/
-        private var listaIdentificadores: LinkedList<Identificador> = LinkedList()
+        private var pilhaDeIdentificadores: LinkedList<Identificador> = LinkedList()
+        private var pilhaDeComandos: LinkedList<Identificador> = LinkedList()
         private var profundidadeEscopo:Int = 0
 
         /***************************************************************************************************************
          * O método analisaVariavel deve decidir de acordo com a profundidade do escopo se a variavel recebida deve    *
          * ser declarada ou usada.                                                                                     *
          **************************************************************************************************************/
-        @JvmStatic fun analisaVariavel(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaIdentificadorNoPrograma(identificador) else empilhaVariavel(identificador)
+        @JvmStatic fun analisaVariavel(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) lerIdentificador(identificador.nome) else empilhaVariavel(identificador)
 
         /***************************************************************************************************************
          * O método analisaProcedimento deve decidir de acordo com a profundidade do escopo se o procedimento          *
          * chamado deve ser declarado ou usado.                                                                        *
          **************************************************************************************************************/
-        @JvmStatic fun analisaProcedimento(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) buscaIdentificadorNoPrograma(identificador) else empilhaProcedimento(identificador)
+        @JvmStatic fun analisaProcedimento(identificador: Identificador):Boolean = if (profundidadeEscopo > 0) lerIdentificador(identificador.nome) else empilhaProcedimento(identificador)
 
         /***************************************************************************************************************
-         * O método buscaIdentificadorNoPrograma deve buscar o identificador dentro do programa para saber se ele      *
-         * existe e pode ser usado.                                                                                    *
+         * O método lerIdentificador deve buscar o identificador dentro do programa para saber se ele existe e pode    *
+         * ser usado. Além disso os tipos dos identificadores devem ser do tipo compatível com as operações realizadas.*
          **************************************************************************************************************/
-        private fun buscaIdentificadorNoPrograma(identificador: Identificador):Boolean
+        private fun lerIdentificador(identificador: String):Boolean
         {
+            //A leitura da pilha começa de cima para baixo, logo os últimos identificadores declarados são os primeiros.
+            var i:Int = 0
+            while (pilhaDeIdentificadores.size-1 > i)
+            {
+                if (pilhaDeIdentificadores.get(i).nome.equals(identificador))
+                {
+                    //Analisar os tipos dos identificadores no comando
+                    if (pilhaDeComandos.isEmpty())
+                    {
+                        pilhaDeComandos.push(pilhaDeIdentificadores.get(i))
+                        return true
+                    }
+                    else
+                        return analisaTipo(pilhaDeIdentificadores.get(i))
+                }
+                i++
+            }
+            return false
+        }
 
-            return true
+        @JvmStatic fun analisaTipo(identificador: Identificador): Boolean
+        {
+            /**falta analisar se a pilha ta vazia
+             * e tambem ve o opRelacional pra add na pilha
+             */
+            if (pilhaDeComandos.first.tipo.equals("integer"))
+            {
+                if (identificador.tipo.equals("integer"))
+                {
+                    pilhaDeComandos.push(identificador)
+                    return true
+                }
+                else
+                {
+                    println("ERRO SEMÂNTICO: tipo imcopatível com integer")
+                    return false
+                }
+            }
+            else if (pilhaDeComandos.first.tipo.equals("real"))
+            {
+                if (identificador.tipo.equals("integer"))
+                {
+                    identificador.tipo = "real"
+                    pilhaDeComandos.push(identificador)
+                    return true
+                }
+                else if (identificador.tipo.equals("real"))
+                {
+                    pilhaDeComandos.push(identificador)
+                    return true
+                }
+                else
+                {
+                    println("ERRO SEMÂNTICO: tipo imcopatível com real")
+                    return false
+                }
+            }
+            else if (pilhaDeComandos.first.tipo.equals("boolean"))
+            {
+                if (identificador.tipo.equals("boolean"))
+                {
+                    pilhaDeComandos.push(identificador)
+                    return true
+                }
+                else
+                {
+                    println("ERRO SEMÂNTICO: tipo imcopatível com boolean")
+                    return false
+                }
+            }
+            else
+            {
+                println("ERRO SEMÂNTICO: tipo imcopatível desconhecido")
+                return false
+            }
         }
 
         /***************************************************************************************************************
@@ -47,9 +121,9 @@ class AnalisadorSemantico
         {
             //A leitura da pilha começa de cima para baixo, logo os últimos identificadores declarados são os primeiros.
             var i:Int = 0
-            while (listaIdentificadores.get(i).nome != "#")
+            while (pilhaDeIdentificadores.get(i).nome != "#")
             {
-                if (listaIdentificadores.get(i).nome.equals(identificador.nome) && listaIdentificadores.get(i).tipo.equals((identificador.tipo)))
+                if (pilhaDeIdentificadores.get(i).nome.equals(identificador.nome) && pilhaDeIdentificadores.get(i).tipo.equals((identificador.tipo)))
                     return true
                 i++
             }
@@ -68,7 +142,7 @@ class AnalisadorSemantico
                 println("ERRO SEMÂNTICO: Erro inesperado. Problema no tipo do procedimento ou programa. Como isso chegou aqui???!!!")
                 return false
             }
-            listaIdentificadores.push(identificador)
+            pilhaDeIdentificadores.push(identificador)
             return true
         }
 
@@ -87,19 +161,19 @@ class AnalisadorSemantico
                     return false
                 }
                 //verificar se o nome do procedimento é igual ao nome do programa
-                if (identificador.nome.equals(listaIdentificadores.get(listaIdentificadores.size-2).nome))
+                if (identificador.nome.equals(pilhaDeIdentificadores.get(pilhaDeIdentificadores.size-2).nome))
                 {
                     println("ERRO SEMÂNTICO: Esse nome já foi usado como identificador no nome do programa")
                     return false
                 }
-                listaIdentificadores.push(identificador)
-                listaIdentificadores.push(Identificador("#", "#"))
+                pilhaDeIdentificadores.push(identificador)
+                pilhaDeIdentificadores.push(Identificador("#", "#"))
                 return true
             }
             else if (identificador.tipo.equals("program"))
             {
-                listaIdentificadores.push(Identificador("#", "#"))
-                listaIdentificadores.push(identificador)
+                pilhaDeIdentificadores.push(Identificador("#", "#"))
+                pilhaDeIdentificadores.push(identificador)
                 return true
             }
             else
@@ -117,10 +191,16 @@ class AnalisadorSemantico
         private fun desempilhaProcedimento()
         {
             //Desempilha a partir do topo da pilha
-            while (listaIdentificadores.first.nome != "#")
-                listaIdentificadores.pop()
+            while (pilhaDeIdentificadores.first.nome != "#")
+                pilhaDeIdentificadores.pop()
             //Desempilha o marcador '#'
-            listaIdentificadores.pop()
+            pilhaDeIdentificadores.pop()
+        }
+
+        fun desempilharComandos()
+        {
+            while (pilhaDeComandos.size>0)
+                pilhaDeComandos.pop()
         }
 
         /***************************************************************************************************************
@@ -129,8 +209,8 @@ class AnalisadorSemantico
         @JvmStatic fun definirTipoDasVariaveis (tipo:String)
         {
             var i:Int = 0
-            while (i < listaIdentificadores.size-1 && listaIdentificadores.get(i).tipo.equals(""))
-                listaIdentificadores.get(i++).tipo = tipo
+            while (i < pilhaDeIdentificadores.size-1 && pilhaDeIdentificadores.get(i).tipo.equals(""))
+                pilhaDeIdentificadores.get(i++).tipo = tipo
         }
 
         @JvmStatic fun abreEscopo()
@@ -145,7 +225,7 @@ class AnalisadorSemantico
                 desempilhaProcedimento()
         }
 
-        @JvmStatic fun pilhaVazia(): Boolean = this.listaIdentificadores.isNullOrEmpty()
+        @JvmStatic fun pilhaVazia(): Boolean = this.pilhaDeIdentificadores.isNullOrEmpty()
     }
 
 }
