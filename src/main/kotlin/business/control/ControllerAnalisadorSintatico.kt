@@ -414,7 +414,7 @@ class ControllerAnalisadorSintatico
                 val tipoArgurmento = tab.get(indice).token
                 if (REGEX_tipo())
                 {
-                    //agora definir o tipo das variáveis que foram declaradas
+                    /** agora definir o tipo das variáveis que foram declaradas **/
                     Semantico.definirTipoDasVariaveis(tipoArgurmento)
 
                     /**procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))**///adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
@@ -526,6 +526,8 @@ class ControllerAnalisadorSintatico
             //após um comando vem um ';'
             if (tab.get(indice).token.equals(";"))
             {
+                /**aqui tem que desempilhar lista de comandos antes de receber um novo comando ou sair de um.**/
+                Semantico.desempilharComandos()
                 AUX_proximo()
                 if (REGEX_end())
                     return true
@@ -547,10 +549,11 @@ class ControllerAnalisadorSintatico
      */
     private fun comando(): Boolean
     {
-        //to do
-        if(variavel())
+        /** identificador que será empilhado na pilhaDeComandos do Semântico **/
+        var id = Identificador(tab.get(indice).token, "")
+
+        if(identificador())
         {
-            //na verdade a variável pode ser um procedimento, já que procedimento também são identificadores
             if (ativacaoDeProcedimento())
                 return true
             else
@@ -558,6 +561,8 @@ class ControllerAnalisadorSintatico
                 AUX_proximo()
                 if (REGEX_atribuicao())
                 {
+                    /** como está dentro de um begin, então vai lerVariavel() e verificar o tipo **/
+                    Semantico.analisaVariavel(id)
                     AUX_proximo()
                     return expressao()
                 }
@@ -599,6 +604,11 @@ class ControllerAnalisadorSintatico
                 {
                     AUX_proximo()
                     return comando()
+                }
+                else
+                {
+                    println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do'.")
+                    return false
                 }
             }
         }
@@ -657,6 +667,8 @@ class ControllerAnalisadorSintatico
                     if (tab.get(indice).token.equals(";"))
                     {
                         AUX_proximo()
+                        /** Aqui também tem que desempilhar os comandos **/
+                        Semantico.desempilharComandos()
                         if (seletor())
                             return listaSeletor()
                         else
@@ -701,6 +713,12 @@ class ControllerAnalisadorSintatico
         {
             if (opRelacional())
             {
+                /*  Uma forma que encontrei para testar alterar o tipo de uma expressão
+                    exemplo:    se comando() --> i:= 3 < 5 --> i:= true
+                    daí verificasse se o tipo de i := boolean
+                    Esse teste servirá principalmente para if e while
+                 */
+                Semantico.analisaTipo("relacional")
                 AUX_proximo()
                 return expressaoSimples()
             }
@@ -809,6 +827,9 @@ class ControllerAnalisadorSintatico
      *      | not fator
      */
     private fun fator(): Boolean {
+        /** identificador que será empilhado na pilhaDeComandos do Semântico **/
+        //var id = Identificador(tab.get(indice).token, "")
+
         if (REGEX_identificador())
         {
             AUX_proximo()
@@ -831,13 +852,29 @@ class ControllerAnalisadorSintatico
             return true
         }
         else if (REGEX_numInt())
+        {
+            //id.tipo = "integer"
+            Semantico.analisaTipo("integer")
             return true
+        }
         else if (REGEX_numReal())
+        {
+            //id.tipo = "real"
+            Semantico.analisaTipo("real")
             return true
+        }
         else if (REGEX_true())
+        {
+            //id.tipo = "boolean"
+            Semantico.analisaTipo("boolean")
             return true
+        }
         else if (REGEX_false())
+        {
+            //id.tipo = "boolean"
+            Semantico.analisaTipo("boolean")
             return true
+        }
         else if ( tab.get(indice).token.equals("(") )
         {
             AUX_proximo()
@@ -886,7 +923,7 @@ class ControllerAnalisadorSintatico
      *  variável →
      *      id
      */
-    private fun variavel(): Boolean {
+    private fun identificador(): Boolean {
         return REGEX_identificador()
     }
 
