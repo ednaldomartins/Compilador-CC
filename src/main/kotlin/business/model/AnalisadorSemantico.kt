@@ -16,7 +16,7 @@ class AnalisadorSemantico
          **************************************************************************************************************/
         private var pilhaDeIdentificadores: LinkedList<Identificador> = LinkedList()
         //private var pilhaDeComandos: LinkedList<Identificador> = LinkedList()
-        private var tipoDeComandos: String = ""
+        var tipoDeComandos: String = ""
         private var profundidadeEscopo:Int = 0
 
         /***************************************************************************************************************
@@ -62,64 +62,7 @@ class AnalisadorSemantico
             }
             return false
         }
-/**
-        @JvmStatic fun analisaTipo(identificador: Identificador): Boolean
-        {
-            /**falta analisar se a pilha ta vazia
-             * e tambem ve o opRelacional pra add na pilha
-             */
-            if (pilhaDeComandos.first.tipo.equals("integer"))
-            {
-                if (identificador.tipo.equals("integer"))
-                {
-                    pilhaDeComandos.push(identificador)
-                    return true
-                }
-                else
-                {
-                    println("ERRO SEMÂNTICO: tipo imcopatível com integer")
-                    return false
-                }
-            }
-            else if (pilhaDeComandos.first.tipo.equals("real"))
-            {
-                if (identificador.tipo.equals("integer"))
-                {
-                    identificador.tipo = "real"
-                    pilhaDeComandos.push(identificador)
-                    return true
-                }
-                else if (identificador.tipo.equals("real"))
-                {
-                    pilhaDeComandos.push(identificador)
-                    return true
-                }
-                else
-                {
-                    println("ERRO SEMÂNTICO: tipo imcopatível com real")
-                    return false
-                }
-            }
-            else if (pilhaDeComandos.first.tipo.equals("boolean"))
-            {
-                if (identificador.tipo.equals("boolean"))
-                {
-                    pilhaDeComandos.push(identificador)
-                    return true
-                }
-                else
-                {
-                    println("ERRO SEMÂNTICO: tipo imcopatível com boolean")
-                    return false
-                }
-            }
-            else
-            {
-                println("ERRO SEMÂNTICO: tipo imcopatível desconhecido")
-                return false
-            }
-        }
-**/
+
         @JvmStatic fun analisaTipo(tipoDoIdentificador: String): Boolean
         {
             /**falta analisar se a pilha ta vazia
@@ -134,12 +77,14 @@ class AnalisadorSemantico
             {
                 if (tipoDoIdentificador.equals("integer"))
                 {
-                    //posso tirar isso a pilha vai se manter igual
-                    //tipoDeComandos = tipoDoIdentificador
+                    return true
+                }
+                else if (tipoDoIdentificador.matches("\\*|\\/".toRegex()))
+                {
                     return true
                 }
                 //verifica se o token atual é um relacional, esse comando agora será boolean
-                else if (tipoDoIdentificador.equals("relacional"))
+                else if (tipoDoIdentificador.matches("=|<|>|<=|>=|<>".toRegex()))
                 {
                     //exemplo: tipoDeComando = "integer_relacional"
                     tipoDeComandos += "_relacional"
@@ -155,8 +100,10 @@ class AnalisadorSemantico
             {
                 if (tipoDoIdentificador.equals("integer"))
                 {
-                    //tipoDoIdentificador = "real"
-                    //tipoDeComandos = tipoDoIdentificador
+                    return true
+                }
+                else if (tipoDoIdentificador.matches("\\*|\\/".toRegex()))
+                {
                     return true
                 }
                 else if (tipoDoIdentificador.equals("real"))
@@ -165,7 +112,7 @@ class AnalisadorSemantico
                     return true
                 }
                 //verifica se o token atual é um relacional, esse comando agora será boolean
-                else if (tipoDoIdentificador.equals("relacional"))
+                else if (tipoDoIdentificador.matches("=|<|>|<=|>=|<>".toRegex()))
                 {
                     //exemplo: tipoDeComando = "real_relacional"
                     tipoDeComandos += "_relacional"
@@ -186,8 +133,9 @@ class AnalisadorSemantico
                 /*  um tipo booleano não pode ser maior ou menor que outro termo
                     note que após o relacional ele continuará como boolean, logo, se o próximo termo for um número
                     vai acusar erro quando voltar para esse método, pois a situação não se encaixará em nenhum IF
+                    Nessa situação está incluso: "=|<|>|<=|>=|<>|and|or"
                  */
-                else if (tipoDoIdentificador.equals("relacional") && !tipoDoIdentificador.equals("\\<|\\>"))
+                else if (tipoDoIdentificador.matches("=|<=|>=|<>|and|or|".toRegex()))
                 {
                     //se for relacional, então só retorna true
                     return true
@@ -198,9 +146,9 @@ class AnalisadorSemantico
                     return false
                 }
             }
-            else if (tipoDeComandos.equals("integer_relacional|real_relacional"))
+            else if (tipoDeComandos.matches("integer_relacional|real_relacional".toRegex()))
             {
-                if (tipoDoIdentificador.equals("integer|real"))
+                if (tipoDoIdentificador.matches("integer|real".toRegex()))
                 {
                     //então, esse comando agora se trata de um tipo booleano
                     tipoDeComandos = "boolean"
@@ -305,8 +253,6 @@ class AnalisadorSemantico
 
         fun desempilharComandos()
         {
-            //while (pilhaDeComandos.size>0)
-            //    pilhaDeComandos.pop()
             tipoDeComandos = ""
         }
 

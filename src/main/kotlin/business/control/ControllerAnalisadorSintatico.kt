@@ -99,7 +99,10 @@ class ControllerAnalisadorSintatico
      */
     private fun declaracoesVariaveis() : Boolean {
         if (REGEX_var())
+        {
+            AUX_proximo()
             return listaDeclaracoesVariaveis()
+        }
         /*else{não há lista de declarações de variaveis. CONTINUE...}*/
         return true
     }
@@ -117,19 +120,12 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (REGEX_tipo())
             {
-                /*  definir o REGEX_tipo em todas as variaveis que foram declaradas  TO FAZENDO NO SEMANTICO
-                var j = listaProcedimentos.last.argumentos.size - 1
-                while (j >= 0 && listaProcedimentos.last.argumentos.get(j).tipo == "")
-                {
-                    listaProcedimentos.last.argumentos.get(j--).tipo = tab.get(indice).token
-                }
-                */
-
                 //O Semântico vai definir os tipos das variáveis que foram declaradas nesse trecho.
                 Semantico.definirTipoDasVariaveis(tab.get(indice).token)
                 AUX_proximo()
                 if(tab.get(indice).token.equals(";"))
                 {
+                    AUX_proximo()
                     return listaDeclaracoesVariaveis()
                 }
                 else
@@ -170,41 +166,9 @@ class ControllerAnalisadorSintatico
     private fun listaDeIdentificadores() : Boolean
     {
         //pular, porque os metodos que chamam listaDeIdentificadores ou veio de um ';' ou de um 'var'
-        AUX_proximo()
+
         if (REGEX_identificador())
         {
-            /*****************************************************
-             *
-             * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
-             *
-             *****************************************************/
-            //verificar se já existe um REGEX_identificador declarado com o mesmo nome
-
-            /*
-            val nomeVariavel = tab.get(indice).token
-            if( existeNaListaDeIdentificadores(nomeVariavel) )
-            {
-                print("ERRO: ['IDENTIFICADOR': $nomeVariavel, linha ${tab.get(indice).linha}] já foi declarado")
-                return false
-            }
-            else
-            {
-                //entao adiciona o novo 'IDENTIFICADOR' à lista e incrementa o índice.
-                listaIdentificadores.add(nomeVariavel)//remover essa lista
-                //listaProcedimentos.last.argumentos.add(Variavel(nomeVariavel, ""))
-                AUX_proximo()
-                if (tab.get(indice).token.equals(","))
-                    return listaDeIdentificadores() //|id
-                else if (tab.get(indice).token.equals(":"))
-                    return true
-                else
-                {
-                    print("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado.")
-                    return false
-                }
-            }
-            */
-
             //limpar informação do identificador anterior
             identificadorAtual = Identificador()
             identificadorAtual.nome = tab.get(indice).token
@@ -213,7 +177,10 @@ class ControllerAnalisadorSintatico
             {
                 AUX_proximo()
                 if (tab.get(indice).token.equals(","))
+                {
+                    AUX_proximo()
                     return listaDeIdentificadores() //|id
+                }
                 else if (tab.get(indice).token.equals(":"))
                     return true
                 else
@@ -275,7 +242,7 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO: problema em comando composto")
+                        println("ERRO: problema em comando composto na linha ${tab.get(indice).linha}")
                         return false
                     }
                 }
@@ -313,7 +280,6 @@ class ControllerAnalisadorSintatico
                     {
                         return true
                     }
-                    //houve um erro na lista de argumentos
                     else
                     {
                         println("ERRO SINTÁTICO: problema na lista de argumentos")
@@ -325,39 +291,6 @@ class ControllerAnalisadorSintatico
                     println("ERRO SEMÂNTICO: problema na declaração do procedimento")
                     return false
                 }
-
-                //val nomeProcedimento = tab.get(indice).token //procedimento só será salvo se passar nos testes
-                //var novoProcedimento = Procedimento(nomeProcedimento)
-
-
-
-                /*
-                AUX_proximo()
-
-                if (argumentos(identificadorAtual))
-                {
-                    /*****************************************************
-                     *
-                     * ESSA PARTE DEVERIA SER IMPLEMENTADA NO SEMANTICO
-                     *
-                     *****************************************************/
-                    if (existeNaListaDeProcedimentos(novoProcedimento))
-                    {
-                        println("ERRO: O procedimento já existe com mesmo nome e argumentos")
-                        return false
-                    }
-                    else
-                    {
-                        listaProcedimentos.add(novoProcedimento)
-                        return true
-                    }
-                }
-                else    //houve um erro na lista de argumentos
-                {
-                    println("ERRO: problema na lista de argumentos")
-                    return false
-                }
-                */
             }
             else if (REGEX_begin())
             {
@@ -375,8 +308,11 @@ class ControllerAnalisadorSintatico
      */
     private fun argumentos() : Boolean
     {
-        if (tab.get(indice).token.equals("("))   //tem lista de parâmetros
+        if (tab.get(indice).token.equals("("))
+        {   //tem lista de parâmetros
+            AUX_proximo()
             return listaDeParametros()
+        }
         else if (tab.get(indice).token.equals(";"))  //não tem lista de parâmetros
             return true
         else
@@ -393,21 +329,14 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeParametros(): Boolean
     {
-        AUX_proximo()
+        //AUX_proximo()
         //se for um 'var' pula, não interessa para o sintático no momento
-        //if (REGEX_var())
-        //    AUX_proximo()
+        if (REGEX_var())
+            AUX_proximo()
 
         //if (REGEX_identificador())
         if (listaDeIdentificadores())
         {
-            /**OBS: teste. se voltar de lista de identificadores entao ja leu todos ids e agora veio um : e depois um tipo**/
-            //envia variável para o Semântico, mas ainda sem o seu tipo.
-            //identificadorAtual = Identificador()
-            //identificadorAtual.nome = tab.get(indice).token
-            //Semantico.analisaIdentificador(identificadorAtual)
-            //val nomeArgumento = tab.get(indice).token
-            //AUX_proximo()
             if (tab.get(indice).token.equals(":"))
             {
                 AUX_proximo()
@@ -416,14 +345,15 @@ class ControllerAnalisadorSintatico
                 {
                     /** agora definir o tipo das variáveis que foram declaradas **/
                     Semantico.definirTipoDasVariaveis(tipoArgurmento)
-
-                    /**procedimento.argumentos.add(Variavel(nomeArgumento, tipoArgurmento))**///adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
+                    //adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
                     AUX_proximo()
                     if( tab.get(indice).token.equals(")") )
                     {
                         AUX_proximo()
                         if (tab.get(indice).token.equals(";"))
+                        {
                             return true
+                        }
                         else
                         {
                             println("ERRO: É esperado um ';' para completar o procedimento")
@@ -433,8 +363,7 @@ class ControllerAnalisadorSintatico
                     //recursivamento valida os próximos argumentos
                     else if (tab.get(indice).token.equals(";"))
                     {
-                        //voltar pq quando entrar em lista de parametros vai pular
-                        indice--
+                        AUX_proximo()
                         return listaDeParametros()
                     }
                     else
@@ -575,25 +504,33 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (expressao())
             {
-                if (REGEX_then())
+                if (Semantico.tipoDeComandos.equals("boolean"))
                 {
-                    //limpar tipo do comando
-                    Semantico.desempilharComandos()
-                    AUX_proximo()
-                    if (comando())
+                    if (REGEX_then())
                     {
+                        //limpar tipo do comando
+                        Semantico.desempilharComandos()
                         AUX_proximo()
-                        if(REGEX_else())
+                        if (comando())
                         {
                             AUX_proximo()
-                            return (comando())
-                        }
-                        else {
-                            AUX_proximo()
-                            return true
+                            if(REGEX_else())
+                            {
+                                AUX_proximo()
+                                return (comando())
+                            }
+                            else {
+                                AUX_proximo()
+                                return true
 
+                            }
                         }
                     }
+                }
+                else
+                {
+                    println("ERRO SEMÂNTICO: comando do if não é do tipo boolean.")
+                    return false
                 }
             }
         }
@@ -602,16 +539,25 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (expressao())
             {
-                if (REGEX_do())
+                //verificar se é um comando boolean
+                if (Semantico.tipoDeComandos.equals("boolean"))
                 {
-                    //remover tipo do comando
-                    Semantico.desempilharComandos()
-                    AUX_proximo()
-                    return comando()
+                    if (REGEX_do())
+                    {
+                        //remover tipo do comando
+                        Semantico.desempilharComandos()
+                        AUX_proximo()
+                        return comando()
+                    }
+                    else
+                    {
+                        println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do'.")
+                        return false
+                    }
                 }
                 else
                 {
-                    println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do'.")
+                    println("ERRO SEMÂNTICO: comando do while não é do tipo boolean.")
                     return false
                 }
             }
@@ -816,6 +762,7 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (opMultiplicativo())
             {
+                Semantico.analisaTipo(tab.get(indice).token)
                 AUX_proximo()
                 return termo()
             }
@@ -865,25 +812,21 @@ class ControllerAnalisadorSintatico
         }
         else if (REGEX_numInt())
         {
-            //id.tipo = "integer"
             Semantico.analisaTipo("integer")
             return true
         }
         else if (REGEX_numReal())
         {
-            //id.tipo = "real"
             Semantico.analisaTipo("real")
             return true
         }
         else if (REGEX_true())
         {
-            //id.tipo = "boolean"
             Semantico.analisaTipo("boolean")
             return true
         }
         else if (REGEX_false())
         {
-            //id.tipo = "boolean"
             Semantico.analisaTipo("boolean")
             return true
         }
@@ -1027,48 +970,6 @@ class ControllerAnalisadorSintatico
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *
      ******************************************************************************************************************/
-    /*
-    private fun existeNaListaDeIdentificadores (identificador: String): Boolean
-    {
-        var i = 0
-        if (!listaProcedimentos.isNullOrEmpty())
-            while( i < this.listaProcedimentos.last.argumentos.size)
-                if(identificador == listaProcedimentos.last.argumentos.get(i++).nome)
-                    return true
-
-        return false
-    }
-
-
-    private fun existeNaListaDeProcedimentos (procedimento: Procedimento): Boolean
-    {
-        //identificador0 é o nome do programa.
-        if (procedimento.nome != listaIdentificadores.get(0))
-        {
-            if (!this.listaProcedimentos.isNullOrEmpty()) {
-                for (proc in this.listaProcedimentos) {
-                    if (proc.nome.toLowerCase() == procedimento.nome.toLowerCase()) {//no refinamento vou verificar nome|NOME
-                        if (proc.argumentos.size == procedimento.argumentos.size) {
-                            for (i in 0..proc.argumentos.size) {
-                                if (proc.argumentos.get(i).tipo.toLowerCase() == procedimento.argumentos.get(i).tipo.toLowerCase())
-                                else
-                                    return false
-                            }
-                        }
-                        else return false   //tem o mesmo nome, mas a lista de parâmetros é diferente
-                    }
-                    else
-                        return false    //tem o nome diferente
-                }
-            }
-            else
-                return false    //ainda não existe procedimentos, logo não existe outro igual
-        }
-        //se não houve diferença, então retorna true
-        return true
-    }
-
-*/
     private fun AUX_copiarTabelaSemComentarios(tabela: LinkedList<Simbolo>)
     {
         this.tab = LinkedList()
