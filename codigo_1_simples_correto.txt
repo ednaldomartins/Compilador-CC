@@ -1,0 +1,7 @@
+program SimplesCorreto; {programa 1 _)T ; @#  exemplo}
+var
+	valor1, valor2: integer;
+begin
+	valor1 := 10;
+    writeln(valor1);
+end.

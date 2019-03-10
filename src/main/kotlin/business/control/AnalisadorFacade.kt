@@ -11,7 +11,10 @@ import java.util.logging.Logger
 class AnalisadorFacade
 {
     /**  Windows = \\ , Linux = //  **/
-    val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo2.txt"
+    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_1_simples_correto.txt"
+    val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_2_complexo_correto.txt"
+    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_3_erro_opRelacional_boolean.txt"
+    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_4_erro_opRelacional_numero.txt"
     val tabela = LinkedList<Simbolo>()
     val codigo = LinkedList<String>(carregarListaArquivo())
 
@@ -25,7 +28,7 @@ class AnalisadorFacade
     }
 
     /**************************************************************************
-     * Metodo para retornar Arquivo de codigo em MultableList                 *                                                           *
+     * Metodo para retornar Arquivo de codigo em MultableList                 *
      * @return MutableList                                                    *
      **************************************************************************/
     fun carregarListaArquivo(): MutableList<String>? {
@@ -34,7 +37,6 @@ class AnalisadorFacade
         } catch (ex: IOException) {
             Logger.getLogger(ControllerAnalisadorLexico::class.java.name).log(Level.SEVERE, null, ex)
         }
-
         return null
     }
 

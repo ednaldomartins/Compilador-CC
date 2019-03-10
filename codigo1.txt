@@ -1,8 +1,0 @@
-program teste; {programa 1 _)T ; @#  exemplo}
-var
-	valor1, valor2: integer;
-    valor2, real;   //erro de variável já declarada
-begin
-	valor := 10;
-
-end.

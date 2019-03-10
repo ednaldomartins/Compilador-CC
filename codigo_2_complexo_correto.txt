@@ -16,7 +16,7 @@ procedure adicao(var x:real; z:integer);
                     else:
                         i := 0;
 
-                    while true < 6 do
+                    while i < 7 do
                     begin
                         writeln (a);
                         i := i + 1;
