@@ -577,6 +577,8 @@ class ControllerAnalisadorSintatico
             {
                 if (REGEX_then())
                 {
+                    //limpar tipo do comando
+                    Semantico.desempilharComandos()
                     AUX_proximo()
                     if (comando())
                     {
@@ -602,6 +604,8 @@ class ControllerAnalisadorSintatico
             {
                 if (REGEX_do())
                 {
+                    //remover tipo do comando
+                    Semantico.desempilharComandos()
                     AUX_proximo()
                     return comando()
                 }
@@ -711,14 +715,20 @@ class ControllerAnalisadorSintatico
     {
         if(expressaoSimples())
         {
+            /**ainda tenho que arrumar isso aqui pra testar o comando relacional < > com true e false**/
             if (opRelacional())
             {
                 /*  Uma forma que encontrei para testar alterar o tipo de uma expressão
                     exemplo:    se comando() --> i:= 3 < 5 --> i:= true
-                    daí verificasse se o tipo de i := boolean
-                    Esse teste servirá principalmente para if e while
+                    daí verificasse se o tipo de i := boolean. Esse teste servirá principalmente para if e while.
+                    Nessa situação enviarei o token, pois o opRelacional usado no para integer|real em alguns casos,
+                    pode ser diferentes dos que são usados no boolean
+                    exemplo:    if true > true then (EXPRESSÃO ERRADA)
+                                if 5 or 7 then (EXPRESSÃO ERRADA)
+                                if 7 > 6 and true then (EXPRESSÃO CORRETA)
+                    Dentro do semântico o comando 7 > 6 se torna true do tipo boolean.
                  */
-                Semantico.analisaTipo("relacional")
+                Semantico.analisaTipo(tab.get(indice).token)
                 AUX_proximo()
                 return expressaoSimples()
             }
@@ -828,10 +838,12 @@ class ControllerAnalisadorSintatico
      */
     private fun fator(): Boolean {
         /** identificador que será empilhado na pilhaDeComandos do Semântico **/
-        //var id = Identificador(tab.get(indice).token, "")
+        var id = Identificador(tab.get(indice).token, "")
 
         if (REGEX_identificador())
         {
+            /**acho que o semantico é pra ser chamado aqui**/
+            Semantico.analisaVariavel(id)
             AUX_proximo()
             if (tab.get(indice).token.equals("("))
             {
