@@ -58,13 +58,9 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             identificadorAtual.nome = tab.get(indice).token
             identificadorAtual.tipo = tab.get(indice-1).token
-            //val nomeDoPrograma = tab.get(indice).token
-            //val tipoDoPrograma = tab.get(indice-1).token
             if (REGEX_identificador())
             {
                 Semantico.analisaProcedimento(identificadorAtual)
-                //listaIdentificadores.add(nomeDoPrograma)
-                //listaProcedimentos.add(Procedimento(nomeDoPrograma))
                 AUX_proximo()
                 if (tab.get(indice).token.equals(";"))
                 {
@@ -77,12 +73,12 @@ class ControllerAnalisadorSintatico
                             {
                                 if (tab.get(indice).token.equals("."))
                                     println("O PROGRAMA PASSOU NO TESTE DO SINTÁTICO")
-                                else println("ERRO: ao final do program é esperado um '.'")
+                                else println("ERRO: ao final do program é esperado um '.' na linha ${tab.get(indice).linha}.")
                             }
                         }
-                        else println("ERRO: problema nas declarações de Subprogramas")
+                        else println("ERRO: problema nas declarações de Subprogramas na linha ${tab.get(indice).linha}.")
                     }
-                    else println("ERRO: problema nas declarações de variáveis")
+                    else println("ERRO: problema nas declarações de variáveis na linha ${tab.get(indice).linha}.")
                 }
                 else println("ERRO: é esperado um ';' na linha ${tab.get(indice).linha}")
             }
@@ -130,13 +126,13 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    print("ERRO: é esperado um ';' após o 'TIPO' das variáveis")
+                    println("ERRO: é esperado um ';' após o 'TIPO' das variáveis na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                print("ERRO: é esperado um 'TIPO' após declarar as variáveis")
+                println("ERRO: é esperado um 'TIPO' após declarar as variáveis na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
@@ -146,13 +142,13 @@ class ControllerAnalisadorSintatico
                 return true
             else
             {
-                print("ERRO: Após as declarações de variáveis é esperando um escopo de um método")
+                println("ERRO: Após as declarações de variáveis é esperando um escopo de um método na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
         else
         {   //como encontrou um VAR, entao tem que ter uma lista de variaveis.
-            print("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis.")
+            println("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis  na linha ${tab.get(indice).linha}.")
             return false
         }
     }
@@ -165,8 +161,6 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeIdentificadores() : Boolean
     {
-        //pular, porque os metodos que chamam listaDeIdentificadores ou veio de um ';' ou de um 'var'
-
         if (REGEX_identificador())
         {
             //limpar informação do identificador anterior
@@ -185,12 +179,15 @@ class ControllerAnalisadorSintatico
                     return true
                 else
                 {
-                    print("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado.")
+                    println("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
+            {
+                println("ERRO SEMÂNTICO: erro na linha ${tab.get(indice).linha}.")
                 return false
+            }
         }
         else return false   /*se já declarou as variáveis, pode ser um REGEX_begin|REGEX_procedure*/
     }
@@ -248,13 +245,13 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO: problema em declarações de Subprogramas")
+                    println("ERRO: problema em declarações de Subprogramas na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema nas declarações de variáveis")
+                println("ERRO: problema nas declarações de variáveis na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
@@ -282,13 +279,13 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO SINTÁTICO: problema na lista de argumentos")
+                        println("ERRO SINTÁTICO: problema na lista de argumentos na linha ${tab.get(indice).linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: problema na declaração do procedimento")
+                    println("ERRO SEMÂNTICO: problema na declaração do procedimento na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
@@ -317,7 +314,7 @@ class ControllerAnalisadorSintatico
             return true
         else
         {
-            println("ERRO: ao declarar um procedimento é esperado uma lista de argumentos ou ';'")
+            println("ERRO: ao declarar um procedimento é esperado uma lista de argumentos ou ';' na linha ${tab.get(indice).linha}.")
             return false
         }
     }
@@ -356,7 +353,7 @@ class ControllerAnalisadorSintatico
                         }
                         else
                         {
-                            println("ERRO: É esperado um ';' para completar o procedimento")
+                            println("ERRO: É esperado um ';' para completar o procedimento na linha ${tab.get(indice).linha}.")
                             return false
                         }
                     }
@@ -368,25 +365,25 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO: É esperado um ')' para completar os argumentos ou ',' para novos argumentos.")
+                        println("ERRO: É esperado um ')' para completar os argumentos ou ',' para novos argumentos na linha ${tab.get(indice).linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO: É esperado o REGEX_tipo do argumento na linha")
+                    println("ERRO: É esperado o REGEX_tipo do argumento na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: É esperado ':' após o nome do argumento na linha")
+                println("ERRO: É esperado ':' após o nome do argumento na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
         else
         {
-            println("ERRO: Após abrir lista de argumentos para um programa")
+            println("ERRO: Após abrir lista de argumentos para um procedimento na linha ${tab.get(indice).linha}.")
             return false
         }
     }
@@ -415,13 +412,13 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO: é esperado um 'end' no fim do procedimento")
+                    println("ERRO: é esperado um 'end' no fim do procedimento na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema nos comandos opcionais")
+                println("ERRO: problema nos comandos opcionais na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
@@ -464,7 +461,7 @@ class ControllerAnalisadorSintatico
                     return true
             }
         }
-        println("ERRO: problema na lista de comandos.")
+        println("ERRO: problema na lista de comandos na linha ${tab.get(indice).linha}..")
         return false//ou é E, false??
     }
 
@@ -491,9 +488,16 @@ class ControllerAnalisadorSintatico
                 if (REGEX_atribuicao())
                 {
                     /** como está dentro de um begin, então vai lerVariavel() e verificar o tipo **/
-                    Semantico.analisaVariavel(id)
-                    AUX_proximo()
-                    return expressao()
+                    if (Semantico.analisaVariavel(id))
+                    {
+                        AUX_proximo()
+                        return expressao()
+                    }
+                    else
+                    {
+                        println("ERRO SEMÂNTICO: Não encontrou Identificador na linha ${tab.get(indice).linha}.")
+                        return false
+                    }
                 }
             }
         }
@@ -529,7 +533,7 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: comando do if não é do tipo boolean.")
+                    println("ERRO SEMÂNTICO: comando do if não é do tipo boolean na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
@@ -551,13 +555,13 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do'.")
+                        println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do' na linha ${tab.get(indice).linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: comando do while não é do tipo boolean.")
+                    println("ERRO SEMÂNTICO: comando do while não é do tipo boolean na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
@@ -580,24 +584,24 @@ class ControllerAnalisadorSintatico
                                 AUX_proximo()
                                 return (comando())
                             } else {
-                                println("ERRO: problema de sintaxe no 'case', após o else é esperado um ':'")
+                                println("ERRO: problema de sintaxe no 'case', após o else é esperado um ':' na linha ${tab.get(indice).linha}.")
                                 return false
                             }
                         } else {
-                            println("ERRO: problema de sintaxe no 'case', é esperado um 'else' após a lista do case")
+                            println("ERRO: problema de sintaxe no 'case', é esperado um 'else' após a lista do case na linha ${tab.get(indice).linha}.")
                             return false
                         }
                     }
                 }
                 else
                 {
-                    println("ERRO: problema de sintaxe no 'case', é esperado um 'of' após um número")
+                    println("ERRO: problema de sintaxe no 'case', é esperado um 'of' após um número na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema de sintaxe no 'case', é esperado um número após o case")
+                println("ERRO: problema de sintaxe no 'case', é esperado um número após o case na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
@@ -626,25 +630,25 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO: problema de sintaxe no 'case', é esperado um ';' após o comando do case seletor")
+                        println("ERRO: problema de sintaxe no 'case', é esperado um ';' após o comando do case seletor na linha ${tab.get(indice).linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO: problema de sintaxe no 'case', problema no 'else'")
+                    println("ERRO: problema de sintaxe no 'case', problema no 'else' na linha ${tab.get(indice).linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema de sintaxe no 'case', após o seletor é esperado um ':''")
+                println("ERRO: problema de sintaxe no 'case', após o seletor é esperado um ':' na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
         else
         {
-            println("ERRO: problema de sintaxe no 'case', é esperado uma lista de seletores do case")
+            println("ERRO: problema de sintaxe no 'case', é esperado uma lista de seletores do case na linha ${tab.get(indice).linha}.")
             return false
         }
     }
@@ -721,19 +725,28 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (tab.get(indice).token.equals("("))
             {
-                AUX_proximo()
-                if (listaDeExpressoes())
+                var id = Identificador(tab.get(indice-1).token, "procedure")
+                if (Semantico.analisaProcedimento(id))
                 {
-                    if( tab.get(indice).token.equals(")") )
+                    AUX_proximo()
+                    if (listaDeExpressoes())
                     {
-                        AUX_proximo()
-                        return true
+                        if( tab.get(indice).token.equals(")") )
+                        {
+                            AUX_proximo()
+                            return true
+                        }
+                        else
+                        {
+                            println("ERRO: problema na sintax do procedimento na linha ${tab.get(indice).linha}.")
+                            return false
+                        }
                     }
+                }
                     else
-                    {
-                        println("ERRO: problema na sintax do procedimento")
-                        return false
-                    }
+                {
+                    println("ERRO: na linha ${tab.get(indice).linha}.")
+                    return false
                 }
             }
             else
@@ -768,7 +781,7 @@ class ControllerAnalisadorSintatico
             }
             return true
         }
-        println("ERRO: problema no termo")
+        println("ERRO: problema no termo na linha ${tab.get(indice).linha}.")
         return false
     }
 
@@ -839,7 +852,7 @@ class ControllerAnalisadorSintatico
             }
             else
             {
-                println("ERRO: problema no fator -> (expressão)")
+                println("ERRO: problema no fator -> (expressão) na linha ${tab.get(indice).linha}.")
                 return false
             }
         }
@@ -850,7 +863,7 @@ class ControllerAnalisadorSintatico
         }
         else
         {
-            println("ERRO: problema no fator.")
+            println("ERRO: problema no fator na linha ${tab.get(indice).linha}.")
             return false
         }
     }
@@ -870,7 +883,7 @@ class ControllerAnalisadorSintatico
             return true
         }
 
-        println("ERRO: problema na lista de expressões.")
+        println("ERRO: problema na lista de expressões na linha ${tab.get(indice).linha}.")
         return false
     }
 
