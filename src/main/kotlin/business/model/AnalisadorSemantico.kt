@@ -45,21 +45,17 @@ class AnalisadorSemantico
                 {
                     /*  após encontrar o identificador, deve-se verificar qual o seu tipo, e caso já exista algum
                         comando em andamento, deve-se verificar se os tipos são compatíveis.    */
-
-                    return analisaTipo(pilhaDeIdentificadores.get(i).tipo)
-                    /**
-                    //Analisar os tipos dos identificadores no comando
-                    if (pilhaDeComandos.isEmpty())
+                    if (pilhaDeIdentificadores.get(i).tipo.equals("procedure"))
                     {
-                        pilhaDeComandos.push(pilhaDeIdentificadores.get(i))
                         return true
                     }
-                    else
-                        return analisaTipo(pilhaDeIdentificadores.get(i))
-                    **/
+                    else{
+                        return analisaTipo(pilhaDeIdentificadores.get(i).tipo)
+                    }
                 }
                 i++
             }
+            println("ERRO SEMÂNTICO: Identificador não encontrado")
             return false
         }
 
