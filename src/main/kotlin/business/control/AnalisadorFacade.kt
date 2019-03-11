@@ -15,6 +15,8 @@ class AnalisadorFacade
     val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_2_complexo_correto.txt"
     //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_3_erro_opRelacional_boolean.txt"
     //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_4_erro_opRelacional_numero.txt"
+    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_5_var_procedure_nome.txt"
+
     val tabela = LinkedList<Simbolo>()
     val codigo = LinkedList<String>(carregarListaArquivo())
 

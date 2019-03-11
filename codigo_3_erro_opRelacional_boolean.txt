@@ -1,12 +1,12 @@
 program ErroRelacionalBoolean;
 var
     y:real;
-procedure adicao(var i:real);
+procedure adicao(var i:integer);
 		begin
             //ERRO
             while true < false do
                     begin
-                        i := i + 1;
+                        i := y + 1;
                     end;
 		end;
 begin
