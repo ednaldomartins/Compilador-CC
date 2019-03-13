@@ -1,0 +1,36 @@
+{comentario certo}
+program teste;
+var
+    y:real;
+procedure adicao(var x:real; z:integer);
+		var
+            a, b: real;
+        procedure add(i: integer);
+                begin
+                    //FEITO NA SALA
+                    case 2 of
+                        1: i := 6;
+                        2: i := 1;
+                    else:
+                        i := 0;
+
+                    while true do
+                    begin
+                        i := i + 1;
+                    end;
+                end;
+		begin
+            a:=1;
+            b:=2;
+            if a > b then
+                begin
+                a:= a + 1;
+                end;
+            else
+			    add(a);
+		end;
+
+begin
+    y:=4;
+    adicao(y);
+end.

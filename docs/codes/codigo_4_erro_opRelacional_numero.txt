@@ -1,0 +1,14 @@
+program ErroRelacionalNumero;
+var
+    x:integer;
+procedure adicao(i:real);
+		begin
+            //ERRO
+            while i and 5 do
+                    begin
+                        i := i + 1;
+                    end;
+		end;
+begin
+    adicao(x);
+end.

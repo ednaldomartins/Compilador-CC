@@ -1,0 +1,14 @@
+program TesteNome;
+var add:integer;
+
+procedure add(b:integer);
+    var a:integer;
+    begin
+        a := 1;
+    end;
+
+
+begin
+    add := 10;
+    add(add);
+end.
