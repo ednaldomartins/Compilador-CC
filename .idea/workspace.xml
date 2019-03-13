@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b9d2b09e-4cbe-42de-b944-a16117ce548c" name="Default Changelist" comment="Identificador será usado para as variáveis e">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/business/control/AnalisadorFacade.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/control/AnalisadorFacade.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Atividade 1 - Lexico.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorLexico.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorLexico.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorSintatico.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorSintatico.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/business/control/ControllerAnalisadorLexico.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/business/control/ControllerAnalisadorLexico.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -35,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-450">
-              <caret line="783" column="41" selection-start-line="783" selection-start-column="41" selection-end-line="783" selection-end-column="41" />
+            <state relative-caret-position="13965">
+              <caret line="934" selection-start-line="934" selection-end-line="934" />
             </state>
           </provider>
         </entry>
@@ -44,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+            <state relative-caret-position="208">
+              <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
               <folding>
                 <element signature="e#26#195#0" expanded="true" />
               </folding>
@@ -54,9 +51,18 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/kotlin/main.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3117">
+            <state relative-caret-position="375">
               <caret line="25" column="169" selection-start-line="25" selection-start-column="169" selection-end-line="25" selection-end-column="169" />
             </state>
           </provider>
@@ -81,28 +87,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/codigo_2_complexo_correto.txt">
+        <entry file="file://$PROJECT_DIR$/src/main/java/infra/Arquivo.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="29" column="22" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/codigo_3_erro_opRelacional_boolean.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/codigo_4_erro_opRelacional_numero.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
+            <state relative-caret-position="538">
+              <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -165,7 +156,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/kotlin/infra/Arquivo.kt" />
-        <option value="$PROJECT_DIR$/src/main/java/infra/Arquivo.java" />
         <option value="$PROJECT_DIR$/src/main/kotlin/Main.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/main.kt" />
         <option value="$PROJECT_DIR$/codigo.txt" />
@@ -182,36 +172,25 @@
         <option value="$PROJECT_DIR$/codigo_1_simples_correto.txt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" />
         <option value="$PROJECT_DIR$/codigo_5_var_procedure_nome.txt" />
-        <option value="$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" />
         <option value="$PROJECT_DIR$/codigo_3_erro_opRelacional_boolean.txt" />
         <option value="$PROJECT_DIR$/codigo_4_erro_opRelacional_numero.txt" />
         <option value="$PROJECT_DIR$/codigo_2_complexo_correto.txt" />
+        <option value="$PROJECT_DIR$/src/main/java/infra/Arquivo.java" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="4">
     <option name="y" value="22" />
     <option name="width" value="1366" />
-    <option name="height" value="746" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -223,10 +202,77 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="docs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="docs" type="462c0819:PsiDirectoryNode" />
+              <item name="codes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="docs" type="462c0819:PsiDirectoryNode" />
+              <item name="task" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="out" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="infra" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Compilador_CC" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Compilador_CC" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="kotlin" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552329864208" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552493396497" />
     <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
   </component>
   <component name="RecentsManager">
@@ -333,48 +379,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1548794643315</updated>
-    </task>
-    <task id="LOCAL-00013" summary="alteração no arquivo de leitura.">
-      <created>1549730350836</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1549730350836</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Implementação do escopo de declarações de variáveis.">
-      <created>1549730398713</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1549730398722</updated>
-    </task>
-    <task id="LOCAL-00015" summary="criação de uma nova tabela de símbolos removendo os comentários para a análise sintática.">
-      <created>1550010144875</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1550010144875</updated>
-    </task>
-    <task id="LOCAL-00016" summary="alterações para testes de erros no sintático.">
-      <created>1550010212430</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1550010212430</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Separando lista_declarações_variáveis e lista_de_identificadores.">
-      <created>1550075022764</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1550075022765</updated>
-    </task>
-    <task id="LOCAL-00018" summary="workspace.">
-      <created>1550081996048</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1550081996048</updated>
     </task>
     <task id="LOCAL-00019" summary="erro de declaração de variável já existente.">
       <created>1550082072212</created>
@@ -677,7 +681,49 @@
       <option name="project" value="LOCAL" />
       <updated>1552329655188</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Correção do retorno do Semântico na verificação de tipos e adição das linhas com erros nos prints.">
+      <created>1552329775799</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1552329775802</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Correção na verificação de tipo de procedimentos.">
+      <created>1552329861206</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1552329861206</updated>
+    </task>
+    <task id="LOCAL-00064" summary="...">
+      <created>1552329880627</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1552329880627</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Alteração local do Arquivo de leitura.">
+      <created>1552493243183</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1552493243191</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Pasta criada para guardar descrição das atividades e arquivos de testes.">
+      <created>1552493335756</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1552493335756</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Alteração simples na leitura do arquivo;">
+      <created>1552493392651</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1552493392651</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TodoView">
@@ -690,9 +736,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1366" height="746" extended-state="4" />
+    <frame x="0" y="22" width="1366" height="1080" extended-state="4" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16818182" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17045455" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.24970274" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -701,7 +748,7 @@
       <window_info id="Favorites" order="6" side_tool="true" weight="0.32996434" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49940333" weight="0.32976446" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.55530304" visible="true" weight="0.2909968" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.55530304" visible="true" weight="0.29079497" />
       <window_info anchor="bottom" x="848" y="603" width="1712" height="328" id="Debug" order="3" sideWeight="0.44469696" side_tool="true" weight="0.2909968" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -710,7 +757,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32869378" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Build" order="10" weight="0.32941177" />
-      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.51060605" weight="0.31993568" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.51060605" weight="0.31903765" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.24970274" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -724,11 +771,6 @@
     </layout>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="rebase" />
-    <MESSAGE value="Estrutura básica para o analisador Semântico." />
-    <MESSAGE value="Correção local." />
-    <MESSAGE value="Identificador será usado para as variáveis e procedimentos no Semântico." />
-    <MESSAGE value="Atualização de class." />
     <MESSAGE value="EM CONSTRUÇÃO: Adaptações feitas para usar o analisador Semântico." />
     <MESSAGE value="Identificador com construção padrão." />
     <MESSAGE value="Métodos de empilhar e buscar procedimento foram implementados." />
@@ -749,7 +791,12 @@
     <MESSAGE value="true e false foram adicionados como palavras chaves." />
     <MESSAGE value="Códigos para teste + código para teste em sala de aula de variável e método com o mesmo nome." />
     <MESSAGE value="Correção do retorno do Semântico na verificação de tipos e adição das linhas com erros nos prints." />
-    <option name="LAST_COMMIT_MESSAGE" value="Correção do retorno do Semântico na verificação de tipos e adição das linhas com erros nos prints." />
+    <MESSAGE value="Correção na verificação de tipo de procedimentos." />
+    <MESSAGE value="..." />
+    <MESSAGE value="Alteração local do Arquivo de leitura." />
+    <MESSAGE value="Pasta criada para guardar descrição das atividades e arquivos de testes." />
+    <MESSAGE value="Alteração simples na leitura do arquivo;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Alteração simples na leitura do arquivo;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -792,16 +839,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/infra/Arquivo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/codigo.txt" />
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.20/60070a2fbed969e9b73f214cb41072eabedf299a/kotlin-stdlib-common-1.3.20-sources.jar!/generated/_Collections.kt">
       <provider selected="true" editor-type-id="text-editor">
@@ -839,55 +876,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/main.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/codigo_5_var_procedure_nome.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="13" column="4" lean-forward="true" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/Identificador.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="29" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/Simbolo.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="38" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3117">
-          <caret line="25" column="169" selection-start-line="25" selection-start-column="169" selection-end-line="25" selection-end-column="169" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-450">
-          <caret line="783" column="41" selection-start-line="783" selection-start-column="41" selection-end-line="783" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
-          <folding>
-            <element signature="e#26#195#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -907,8 +899,74 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/codigo_2_complexo_correto.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="29" column="22" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
+        <state relative-caret-position="495">
+          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar!/java/nio/file/Paths.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
+          <folding>
+            <element signature="e#336#337#0" expanded="true" />
+            <element signature="e#403#404#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13965">
+          <caret line="934" selection-start-line="934" selection-end-line="934" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
+          <folding>
+            <element signature="e#26#195#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="169" selection-start-line="25" selection-start-column="169" selection-end-line="25" selection-end-column="169" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/main.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/Identificador.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="29" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/Simbolo.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="38" selection-start-line="2" selection-start-column="38" selection-end-line="2" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/infra/Arquivo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
