@@ -11,11 +11,13 @@ import java.util.logging.Logger
 class AnalisadorFacade
 {
     /**  Windows = \\ , Linux = //  **/
-    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_1_simples_correto.txt"
-    val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_2_complexo_correto.txt"
-    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_3_erro_opRelacional_boolean.txt"
-    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_4_erro_opRelacional_numero.txt"
-    //val ARQUIVO_ORIGEM = "..//Compilador_CC//codigo_5_var_procedure_nome.txt"
+    val LOCAL_ARQUIVO = "..//Compilador_CC//docs//codes//"
+
+    //val nomeArquivo = "codigo_1_simples_correto.txt"
+    val nomeArquivo = "codigo_2_complexo_correto.txt"
+    //val nomeArquivo = "codigo_3_erro_opRelacional_boolean.txt"
+    //val nomeArquivo = "codigo_4_erro_opRelacional_numero.txt"
+    //val nomeArquivo = "codigo_5_var_procedure_nome.txt"
 
     val tabela = LinkedList<Simbolo>()
     val codigo = LinkedList<String>(carregarListaArquivo())
@@ -35,7 +37,7 @@ class AnalisadorFacade
      **************************************************************************/
     fun carregarListaArquivo(): MutableList<String>? {
         try {
-            return Arquivo(ARQUIVO_ORIGEM).carregarCodigo() as MutableList<String>
+            return Arquivo(LOCAL_ARQUIVO+nomeArquivo).carregarCodigo() as MutableList<String>
         } catch (ex: IOException) {
             Logger.getLogger(ControllerAnalisadorLexico::class.java.name).log(Level.SEVERE, null, ex)
         }
