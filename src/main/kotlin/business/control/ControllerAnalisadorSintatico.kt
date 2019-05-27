@@ -9,7 +9,7 @@ import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
 {
-    var indice: Int = 0
+    var indice = 0
     lateinit var tab: LinkedList<Simbolo>
     lateinit var listaIdentificadores: LinkedList<String>
     lateinit var identificadorAtual: Identificador
@@ -54,24 +54,33 @@ class ControllerAnalisadorSintatico
      */
     private fun programId()
     {
+        //primeira palavra do programa eh PROGRAM
         if(REGEX_program())
         {
             AUX_proximo()
+            //guardar nome do pograma
             identificadorAtual.nome = tab.get(indice).token
             identificadorAtual.tipo = tab.get(indice-1).token
+            //ver se o nome do programa eh um IDENTIFICADOR
             if (REGEX_identificador())
             {
+                //analisador semantico deve testar se a semantica "PROGRAM + NOME_DO_PROGRAMA" e guardar o nome
                 Semantico.analisaProcedimento(identificadorAtual)
                 AUX_proximo()
+                //depois do nome do programa vem ";"
                 if (tab.get(indice).token.equals(";"))
                 {
                     AUX_proximo()
+                    //agora deve analisar as declaracoes de variaveis desse PROGRAM
                     if(this.declaracoesVariaveis())
                     {
+                        //depois de declarar as variaveis, o programa pode ter subprograma(funcoes)
                         if (this.declaracoesDeSubprogramas())
                         {
+                            //depois de testar todos os subprogramas individualmente, caso eles existam, entao o programa principal deve ser testado
                             if (this.comandoComposto())
                             {
+                                //o PROGRAM termina com "."
                                 if (tab.get(indice).token.equals("."))
                                     println("O PROGRAMA PASSOU NO TESTE DO SINTÁTICO")
                                 else println("ERRO: ao final do program é esperado um '.' na linha ${tab.get(indice).linha}.")
@@ -95,6 +104,7 @@ class ControllerAnalisadorSintatico
      *      | ε
      */
     private fun declaracoesVariaveis() : Boolean {
+        //se tem VAR, entao tem uma lista de variaveis
         if (REGEX_var())
         {
             AUX_proximo()
@@ -112,17 +122,21 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeclaracoesVariaveis() : Boolean
     {
+        //se chegou aqui entao existe pelo menos uma variavel nessa lista.
         if(listaDeIdentificadores())
         {
+            //se entrou aqui, entao as variaveis foram declaradas corretamente e agora elas precisam definir o tipo.
             AUX_proximo()
             if (REGEX_tipo())
             {
                 //O Semântico vai definir os tipos das variáveis que foram declaradas nesse trecho.
                 Semantico.definirTipoDasVariaveis(tab.get(indice).token)
                 AUX_proximo()
+                //espera-se um ";" apos declarar o tipo da ou das variaveis
                 if(tab.get(indice).token.equals(";"))
                 {
                     AUX_proximo()
+                    //recursivamente chama o proprio metodo para verificar se ainda tem variaveis na lista de declaracoes
                     return listaDeclaracoesVariaveis()
                 }
                 else
@@ -137,8 +151,14 @@ class ControllerAnalisadorSintatico
                 return false
             }
         }
+        /*  se existe pelo menos uma variavel dentro da pilha, entao houve uma declaracao de variavel.
+            caso esteja vazia, entao o metodo listaDeIdentificadores() retornou false e nenhuma variavel foi
+            declarada corretamente, logo houve um erro.
+         */
         else if(!Semantico.pilhaVazia())
         {
+            //se BEGIN entao esse procedimento vai começar
+            //se PROCEDURE entao outro subprograma vai ser declarado
             if(REGEX_begin() || REGEX_procedure())
                 return true
             else
@@ -162,6 +182,7 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeIdentificadores() : Boolean
     {
+        //se for IDENTIFICADOR entao deve entrar
         if (REGEX_identificador())
         {
             //limpar informação do identificador anterior
@@ -171,11 +192,13 @@ class ControllerAnalisadorSintatico
             if (Semantico.analisaVariavel(identificadorAtual))
             {
                 AUX_proximo()
+                //se depois da variavel tiver uma "," entao ainda ha variavel
                 if (tab.get(indice).token.equals(","))
                 {
                     AUX_proximo()
                     return listaDeIdentificadores() //|id
                 }
+                //se tem ":" entao deve retornar e definir o tipo
                 else if (tab.get(indice).token.equals(":"))
                     return true
                 else
@@ -477,7 +500,7 @@ class ControllerAnalisadorSintatico
     private fun comando(): Boolean
     {
         /** identificador que será empilhado na pilhaDeComandos do Semântico **/
-        var id = Identificador(tab.get(indice).token, "")
+        val id = Identificador(tab.get(indice).token, "")
 
         if(identificador())
         {
@@ -726,7 +749,7 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (tab.get(indice).token.equals("("))
             {
-                var id = Identificador(tab.get(indice-1).token, "procedure")
+                val id = Identificador(tab.get(indice-1).token, "procedure")
                 if (Semantico.analisaProcedimento(id))
                 {
                     AUX_proximo()
@@ -799,7 +822,7 @@ class ControllerAnalisadorSintatico
      */
     private fun fator(): Boolean {
         /** identificador que será empilhado na pilhaDeComandos do Semântico **/
-        var id = Identificador(tab.get(indice).token, "")
+        val id = Identificador(tab.get(indice).token, "")
 
         if (REGEX_identificador())
         {
