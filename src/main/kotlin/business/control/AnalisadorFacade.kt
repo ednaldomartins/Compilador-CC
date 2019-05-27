@@ -25,9 +25,9 @@ class AnalisadorFacade
     fun inicializarAnalisador ()
     {
         //analise
-        var analisadorLexico = ControllerAnalisadorLexico()
+        val analisadorLexico = ControllerAnalisadorLexico()
         analisadorLexico.analisar(tabela, codigo)
-        var analisadorSintatico = ControllerAnalisadorSintatico()
+        val analisadorSintatico = ControllerAnalisadorSintatico()
         analisadorSintatico.analisar(tabela)
     }
 

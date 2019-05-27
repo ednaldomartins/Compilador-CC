@@ -38,20 +38,17 @@ class AnalisadorSemantico
         private fun lerIdentificador(identificador: String):Boolean
         {
             //A leitura da pilha começa de cima para baixo, logo os últimos identificadores declarados são os primeiros.
-            var i:Int = 0
+            var i = 0
             while (pilhaDeIdentificadores.size-1 > i)
             {
-                if (pilhaDeIdentificadores.get(i).nome.equals(identificador))
+                if (pilhaDeIdentificadores.get(i).nome == identificador)
                 {
                     /*  após encontrar o identificador, deve-se verificar qual o seu tipo, e caso já exista algum
                         comando em andamento, deve-se verificar se os tipos são compatíveis.    */
                     if (pilhaDeIdentificadores.get(i).tipo.equals("procedure"))
-                    {
                         return true
-                    }
-                    else{
+                    else
                         return analisaTipo(pilhaDeIdentificadores.get(i).tipo)
-                    }
                 }
                 i++
             }
@@ -170,7 +167,7 @@ class AnalisadorSemantico
         private fun buscaIdentificadorNoEscopo(identificador: Identificador): Boolean
         {
             //A leitura da pilha começa de cima para baixo, logo os últimos identificadores declarados são os primeiros.
-            var i:Int = 0
+            var i = 0
             while (pilhaDeIdentificadores.get(i).nome != "#")
             {
                 if (pilhaDeIdentificadores.get(i).nome.equals(identificador.nome) && pilhaDeIdentificadores.get(i).tipo.equals((identificador.tipo)))
@@ -257,7 +254,7 @@ class AnalisadorSemantico
          **************************************************************************************************************/
         @JvmStatic fun definirTipoDasVariaveis (tipo:String)
         {
-            var i:Int = 0
+            var i = 0
             while (i < pilhaDeIdentificadores.size-1 && pilhaDeIdentificadores.get(i).tipo.equals(""))
                 pilhaDeIdentificadores.get(i++).tipo = tipo
         }
