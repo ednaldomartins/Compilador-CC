@@ -2,18 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="79d4376f-3b55-4215-973d-fbe2b32f2470" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Compilador_CC.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Atividade 1 - Lexico.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/META-INF/Compilador.Compilador.main.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/MainKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/MainKt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/business/control/AnalisadorFacade.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/control/AnalisadorFacade.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorLexico.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/control/ControllerAnalisadorLexico.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/classes/business/model/Simbolo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/classes/business/model/Simbolo.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/business/control/ControllerAnalisadorLexico.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/business/control/ControllerAnalisadorLexico.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -33,8 +25,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="55" column="5" selection-start-line="55" selection-start-column="5" selection-end-line="55" selection-end-column="5" />
+            <state relative-caret-position="-837">
+              <caret line="160" column="68" selection-start-line="160" selection-start-column="68" selection-end-line="160" selection-end-column="68" />
               <folding>
                 <element signature="e#26#174#0" expanded="true" />
               </folding>
@@ -43,8 +35,26 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="33" column="23" lean-forward="true" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/kotlin/main.kt">
           <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="31" column="23" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -60,6 +70,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt" />
+        <option value="$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt" />
         <option value="$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt" />
       </list>
     </option>
@@ -135,7 +147,8 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558925765603" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558928028626" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -187,11 +200,33 @@
       <option name="project" value="LOCAL" />
       <updated>1558925692984</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Mensagem para o fim do teste Léxico.">
+      <created>1558925764463</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1558925764463</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Arquivos do gradle.">
+      <created>1558925853775</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1558925853775</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Arquivos que não foram no commit.">
+      <created>1558925878242</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1558925878242</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="1279" y="22" width="1259" height="1058" extended-state="4" />
+    <editor active="true" />
     <layout>
       <window_info id="Image Layers" />
       <window_info id="Designer" />
@@ -200,6 +235,7 @@
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2497939" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection Results" weight="0.32976446" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
@@ -226,16 +262,32 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Redução de código." />
     <MESSAGE value="Mensagem para o fim do teste Léxico." />
-    <option name="LAST_COMMIT_MESSAGE" value="Mensagem para o fim do teste Léxico." />
+    <MESSAGE value="Arquivos do gradle." />
+    <MESSAGE value="Arquivos que não foram no commit." />
+    <option name="LAST_COMMIT_MESSAGE" value="Arquivos que não foram no commit." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/main.kt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/AnalisadorFacade.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="33" column="23" lean-forward="true" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/model/AnalisadorSemantico.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="31" column="23" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/kotlin/business/control/ControllerAnalisadorSintatico.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="55" column="5" selection-start-line="55" selection-start-column="5" selection-end-line="55" selection-end-column="5" />
+        <state relative-caret-position="-837">
+          <caret line="160" column="68" selection-start-line="160" selection-start-column="68" selection-end-line="160" selection-end-column="68" />
           <folding>
             <element signature="e#26#174#0" expanded="true" />
           </folding>
