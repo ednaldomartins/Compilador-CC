@@ -1,8 +1,10 @@
 package business.control
 
 import business.model.AnalisadorSemantico as Semantico
+
 import business.model.Identificador
 import business.model.Simbolo
+
 import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
@@ -17,7 +19,6 @@ class ControllerAnalisadorSintatico
     private val BEGIN = "begin|BEGIN"
     private val END = "end|END"
     private val VAR = "var|VAR"
-    private val ATRIBUICAO = ":="
     private val DO = "do|DO"
     private val WHILE = "while|WHILE"
     private val IF = "if|IF"
@@ -891,42 +892,31 @@ class ControllerAnalisadorSintatico
      *  variável →
      *      id
      */
-    private fun identificador(): Boolean {
-        return REGEX_identificador()
-    }
+    private fun identificador() = REGEX_identificador()
 
     /***
      *  op_aditivo →
      *      + | - | or
      */
-    private fun opAditivo(): Boolean {
-        return REGEX_operadorAditivo()
-    }
+    private fun opAditivo() = REGEX_operadorAditivo()
 
     /***
      *  op_multiplicativo →
      *      * | / | and
      */
-    private fun opMultiplicativo(): Boolean {
-        return REGEX_operadorMultiplicativo()
-    }
+    private fun opMultiplicativo() = REGEX_operadorMultiplicativo()
 
     /***
      *  op_relacional →
      *      = | < | > | <= | >= | <>
      */
-    private fun opRelacional(): Boolean {
-        return REGEX_operadorRelacional()
-    }
+    private fun opRelacional() = REGEX_operadorRelacional()
 
     /***
      *  sinal →
      *      + | -
      */
-    private fun sinal(): Boolean {
-        return REGEX_sinal()
-    }
-
+    private fun sinal() = REGEX_sinal()
 
 
     /*******************************************************************************************************************
