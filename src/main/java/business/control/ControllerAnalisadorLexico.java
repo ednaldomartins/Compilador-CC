@@ -135,7 +135,7 @@ public class ControllerAnalisadorLexico {
                 }
             }//fim do for do for de tamanho da linha
         }// fim do for de numero de linhas
-        System.out.println("FIM DA EXECUCAO");
+        System.out.println("O PROGRAMA PASSOU NO TESTE DO LÉXICO");
     }//fim do metodo
 
 }
