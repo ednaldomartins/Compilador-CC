@@ -224,6 +224,7 @@ class ControllerAnalisadorSintatico
      */
     private fun declaracoesDeSubprogramas(): Boolean
     {
+        //pode existir varios subprogramas
         if (declaracaoDeSubprograma())
         {
             if (tabela.get(indice).token.equals(";")) {
@@ -248,6 +249,7 @@ class ControllerAnalisadorSintatico
      *      comando_composto
      */
     private fun declaracaoDeSubprograma() :Boolean{
+        //verifica o nome do subprograma
         if(procedureId())
         {
             /* Um procedimento pode ter var: no início do seu escopo    */
@@ -284,19 +286,22 @@ class ControllerAnalisadorSintatico
 
     private fun procedureId() : Boolean
     {
+        //verificar se o nome do procedimento estah em um formato correto
         if (REGEX_procedure())
         {
             AUX_proximo()
-            //Guardar e enviar o nome do procedimento e seu tipo 'procedure'
+            //Guardar e enviar o nome do procedimento e seu tipo 'procedure' para o Semantico verificar se o nome
+            //ja foi separado por outra variavel ou procedimento.
             identificadorAtual = Identificador()
             identificadorAtual.nome = tabela.get(indice).token
             identificadorAtual.tipo = tabela.get(indice-1).token
             if (REGEX_identificador())
             {
-                //analisar procedimento e adicionar a pilha
+                //analisar procedimento e adicionar a pilha caso passe no teste
                 if ( Semantico.analisaProcedimento(identificadorAtual) )
                 {
                     AUX_proximo()
+                    //depois do nome deve-se verificar os argumentos
                     if (argumentos())
                     {
                         return true
@@ -329,12 +334,15 @@ class ControllerAnalisadorSintatico
      */
     private fun argumentos() : Boolean
     {
+        //se tem "(" entao...
         if (tabela.get(indice).token.equals("("))
-        {   //tem lista de parâmetros
+        {   //...tem uma lista de parâmetros
             AUX_proximo()
+            //listaDeParamentro() verifica se a lista estah em um formato correto, caso esteja entao returna true
             return listaDeParametros()
         }
-        else if (tabela.get(indice).token.equals(";"))  //não tem lista de parâmetros
+        //não tem lista de parâmetros
+        else if (tabela.get(indice).token.equals(";"))
             return true
         else
         {
@@ -350,24 +358,25 @@ class ControllerAnalisadorSintatico
      */
     private fun listaDeParametros(): Boolean
     {
-        //AUX_proximo()
-        //se for um 'var' pula, não interessa para o sintático no momento
+        //em pascal as variaveis podem ou nao ter um VAR na frente, e isso nao interessa para o analisador sintatico
         if (REGEX_var())
             AUX_proximo()
 
-        //if (REGEX_identificador())
+        //listaDeIdentificadores irah testar se a lista esta correta, caso ela exista.
         if (listaDeIdentificadores())
         {
+            //apos ler toda a lista de variaveis, deve-se definir o tipo
             if (tabela.get(indice).token.equals(":"))
             {
                 AUX_proximo()
                 val tipoArgurmento = tabela.get(indice).token
                 if (REGEX_tipo())
                 {
-                    /** agora definir o tipo das variáveis que foram declaradas **/
+                    // agora definir o tipo das variáveis que foram declaradas
                     Semantico.definirTipoDasVariaveis(tipoArgurmento)
                     //adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
                     AUX_proximo()
+                    //se ")", entao é o fim da lista de paramentros
                     if( tabela.get(indice).token.equals(")") )
                     {
                         AUX_proximo()
@@ -943,7 +952,7 @@ class ControllerAnalisadorSintatico
 
 
     /*******************************************************************************************************************
-     *                                   Atalhos para testar Regex                                                     *
+     *                                   Atalhos para testar Expressao Regular                                         *
      ******************************************************************************************************************/
     private fun REGEX_program() : Boolean = tabela.get(indice).token.matches(PROGRAM.toRegex())
 
