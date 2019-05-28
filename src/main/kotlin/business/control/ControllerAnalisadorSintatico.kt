@@ -9,10 +9,10 @@ import java.util.LinkedList
 
 class ControllerAnalisadorSintatico
 {
-    var indice = 0
-    lateinit var tabela: LinkedList<Simbolo>
-    lateinit var listaIdentificadores: LinkedList<String>
-    lateinit var identificadorAtual: Identificador
+    private var indice = 0
+    private lateinit var tabela: LinkedList<Simbolo>
+    private lateinit var listaIdentificadores: LinkedList<String>
+    private lateinit var identificadorAtual: Identificador
 
     private val PROGRAM = "program|PROGRAM"
     private val PROCEDURE = "procedure|PROCEDURE"
@@ -59,8 +59,8 @@ class ControllerAnalisadorSintatico
         {
             AUX_proximo()
             //guardar nome do pograma
-            identificadorAtual.nome = tabela.get(indice).token
-            identificadorAtual.tipo = tabela.get(indice-1).token
+            identificadorAtual.nome = tabela[indice].token
+            identificadorAtual.tipo = tabela[indice-1].token
             //ver se o nome do programa eh um IDENTIFICADOR
             if (REGEX_identificador())
             {
@@ -68,7 +68,7 @@ class ControllerAnalisadorSintatico
                 Semantico.analisaProcedimento(identificadorAtual)
                 AUX_proximo()
                 //depois do nome do programa vem ";"
-                if (tabela.get(indice).token.equals(";"))
+                if (tabela[indice].token.equals(";"))
                 {
                     AUX_proximo()
                     //agora deve analisar as declaracoes de variaveis desse PROGRAM
@@ -81,20 +81,20 @@ class ControllerAnalisadorSintatico
                             if (this.comandoComposto())
                             {
                                 //o PROGRAM termina com "."
-                                if (tabela.get(indice).token.equals("."))
+                                if (tabela[indice].token.equals("."))
                                     println("O PROGRAMA PASSOU NO TESTE DO SINTÁTICO")
-                                else println("ERRO: ao final do program é esperado um '.' na linha ${tabela.get(indice).linha}.")
+                                else println("ERRO: ao final do program é esperado um '.' na linha ${tabela[indice].linha}.")
                             }
                         }
-                        else println("ERRO: problema nas declarações de Subprogramas na linha ${tabela.get(indice).linha}.")
+                        else println("ERRO: problema nas declarações de Subprogramas na linha ${tabela[indice].linha}.")
                     }
-                    else println("ERRO: problema nas declarações de variáveis na linha ${tabela.get(indice).linha}.")
+                    else println("ERRO: problema nas declarações de variáveis na linha ${tabela[indice].linha}.")
                 }
-                else println("ERRO: é esperado um ';' na linha ${tabela.get(indice).linha}")
+                else println("ERRO: é esperado um ';' na linha ${tabela[indice].linha}")
             }
-            else println("ERRO: é esperado um 'IDENTIFICADOR' para o REGEX_program, na linha ${tabela.get(indice).linha} ")
+            else println("ERRO: é esperado um 'IDENTIFICADOR' para o REGEX_program, na linha ${tabela[indice].linha} ")
         }
-        else println("ERRO: é esperado a 'PALAVRA_RESERVADA'  REGEX_program no início, na linha ${tabela.get(indice).linha} ")
+        else println("ERRO: é esperado a 'PALAVRA_RESERVADA'  REGEX_program no início, na linha ${tabela[indice].linha} ")
     }
 
 
@@ -130,10 +130,10 @@ class ControllerAnalisadorSintatico
             if (REGEX_tipo())
             {
                 //O Semântico vai definir os tipos das variáveis que foram declaradas nesse trecho.
-                Semantico.definirTipoDasVariaveis(tabela.get(indice).token)
+                Semantico.definirTipoDasVariaveis(tabela[indice].token)
                 AUX_proximo()
                 //espera-se um ";" apos declarar o tipo da ou das variaveis
-                if(tabela.get(indice).token.equals(";"))
+                if(tabela[indice].token.equals(";"))
                 {
                     AUX_proximo()
                     //recursivamente chama o proprio metodo para verificar se ainda tem variaveis na lista de declaracoes
@@ -141,13 +141,13 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO: é esperado um ';' após o 'TIPO' das variáveis na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: é esperado um ';' após o 'TIPO' das variáveis na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: é esperado um 'TIPO' após declarar as variáveis na linha ${tabela.get(indice).linha}.")
+                println("ERRO: é esperado um 'TIPO' após declarar as variáveis na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -163,13 +163,13 @@ class ControllerAnalisadorSintatico
                 return true
             else
             {
-                println("ERRO: Após as declarações de variáveis é esperando um escopo de um método na linha ${tabela.get(indice).linha}.")
+                println("ERRO: Após as declarações de variáveis é esperando um escopo de um método na linha ${tabela[indice].linha}.")
                 return false
             }
         }
         else
         {   //como encontrou um VAR, entao tem que ter uma lista de variaveis.
-            println("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis  na linha ${tabela.get(indice).linha}.")
+            println("ERRO: é esperado pelo menos 1 'IDENTIFICADOR' ao iniciar o escopo da lista de variáveis  na linha ${tabela[indice].linha}.")
             return false
         }
     }
@@ -187,29 +187,29 @@ class ControllerAnalisadorSintatico
         {
             //limpar informação do identificador anterior
             identificadorAtual = Identificador()
-            identificadorAtual.nome = tabela.get(indice).token
+            identificadorAtual.nome = tabela[indice].token
             //O Analisador Semântico vai analisar se a variável já foi declarada no escopo do próprio procedimento
             if (Semantico.analisaVariavel(identificadorAtual))
             {
                 AUX_proximo()
                 //se depois da variavel tiver uma "," entao ainda ha variavel
-                if (tabela.get(indice).token.equals(","))
+                if (tabela[indice].token.equals(","))
                 {
                     AUX_proximo()
                     return listaDeIdentificadores() //|id
                 }
                 //se tem ":" entao deve retornar e definir o tipo
-                else if (tabela.get(indice).token.equals(":"))
+                else if (tabela[indice].token.equals(":"))
                     return true
                 else
                 {
-                    println("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: é esperado ':' ou ',' após um 'IDENTIFICADOR' ainda não declarado na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO SEMÂNTICO: erro na linha ${tabela.get(indice).linha}.")
+                println("ERRO SEMÂNTICO: erro na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -227,7 +227,7 @@ class ControllerAnalisadorSintatico
         //pode existir varios subprogramas
         if (declaracaoDeSubprograma())
         {
-            if (tabela.get(indice).token.equals(";")) {
+            if (tabela[indice].token.equals(";")) {
                 AUX_proximo()
                 return declaracoesDeSubprogramas()
             }
@@ -265,19 +265,19 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO: problema em comando composto na linha ${tabela.get(indice).linha}")
+                        println("ERRO: problema em comando composto na linha ${tabela[indice].linha}")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO: problema em declarações de Subprogramas na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: problema em declarações de Subprogramas na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema nas declarações de variáveis na linha ${tabela.get(indice).linha}.")
+                println("ERRO: problema nas declarações de variáveis na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -293,8 +293,8 @@ class ControllerAnalisadorSintatico
             //Guardar e enviar o nome do procedimento e seu tipo 'procedure' para o Semantico verificar se o nome
             //ja foi separado por outra variavel ou procedimento.
             identificadorAtual = Identificador()
-            identificadorAtual.nome = tabela.get(indice).token
-            identificadorAtual.tipo = tabela.get(indice-1).token
+            identificadorAtual.nome = tabela[indice].token
+            identificadorAtual.tipo = tabela[indice-1].token
             if (REGEX_identificador())
             {
                 //analisar procedimento e adicionar a pilha caso passe no teste
@@ -308,13 +308,13 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO SINTÁTICO: problema na lista de argumentos na linha ${tabela.get(indice).linha}.")
+                        println("ERRO SINTÁTICO: problema na lista de argumentos na linha ${tabela[indice].linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: problema na declaração do procedimento na linha ${tabela.get(indice).linha}.")
+                    println("ERRO SEMÂNTICO: problema na declaração do procedimento na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
@@ -335,19 +335,18 @@ class ControllerAnalisadorSintatico
     private fun argumentos() : Boolean
     {
         //se tem "(" entao...
-        if (tabela.get(indice).token.equals("("))
-        {   //...tem uma lista de parâmetros
-            AUX_proximo()
-            //listaDeParamentro() verifica se a lista estah em um formato correto, caso esteja entao returna true
-            return listaDeParametros()
-        }
-        //não tem lista de parâmetros
-        else if (tabela.get(indice).token.equals(";"))
-            return true
-        else
-        {
-            println("ERRO: ao declarar um procedimento é esperado uma lista de argumentos ou ';' na linha ${tabela.get(indice).linha}.")
-            return false
+        when {
+            tabela[indice].token.equals("(") -> {   //...tem uma lista de parâmetros
+                AUX_proximo()
+                //listaDeParamentro() verifica se a lista estah em um formato correto, caso esteja entao returna true
+                return listaDeParametros()
+            }
+            //não tem lista de parâmetros
+            tabela[indice].token.equals(";") -> return true
+            else -> {
+                println("ERRO: ao declarar um procedimento é esperado uma lista de argumentos ou ';' na linha ${tabela[indice].linha}.")
+                return false
+            }
         }
     }
 
@@ -366,10 +365,10 @@ class ControllerAnalisadorSintatico
         if (listaDeIdentificadores())
         {
             //apos ler toda a lista de variaveis, deve-se definir o tipo
-            if (tabela.get(indice).token.equals(":"))
+            if (tabela[indice].token.equals(":"))
             {
                 AUX_proximo()
-                val tipoArgurmento = tabela.get(indice).token
+                val tipoArgurmento = tabela[indice].token
                 if (REGEX_tipo())
                 {
                     // agora definir o tipo das variáveis que foram declaradas
@@ -377,46 +376,46 @@ class ControllerAnalisadorSintatico
                     //adiciona o REGEX_tipo do argumento.  PARA O SEMANTICO É IDEAL SABER O NOME DO ARGUMENTO PARA COMPARAR SE JA EXISTE
                     AUX_proximo()
                     //se ")", entao é o fim da lista de paramentros
-                    if( tabela.get(indice).token.equals(")") )
+                    if( tabela[indice].token.equals(")") )
                     {
                         AUX_proximo()
-                        if (tabela.get(indice).token.equals(";"))
+                        if (tabela[indice].token.equals(";"))
                         {
                             return true
                         }
                         else
                         {
-                            println("ERRO: É esperado um ';' para completar o procedimento na linha ${tabela.get(indice).linha}.")
+                            println("ERRO: É esperado um ';' para completar o procedimento na linha ${tabela[indice].linha}.")
                             return false
                         }
                     }
                     //recursivamento valida os próximos argumentos
-                    else if (tabela.get(indice).token.equals(";"))
+                    else if (tabela[indice].token.equals(";"))
                     {
                         AUX_proximo()
                         return listaDeParametros()
                     }
                     else
                     {
-                        println("ERRO: É esperado um ')' para completar os argumentos ou ',' para novos argumentos na linha ${tabela.get(indice).linha}.")
+                        println("ERRO: É esperado um ')' para completar os argumentos ou ',' para novos argumentos na linha ${tabela[indice].linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO: É esperado o REGEX_tipo do argumento na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: É esperado o REGEX_tipo do argumento na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: É esperado ':' após o nome do argumento na linha ${tabela.get(indice).linha}.")
+                println("ERRO: É esperado ':' após o nome do argumento na linha ${tabela[indice].linha}.")
                 return false
             }
         }
         else
         {
-            println("ERRO: Após abrir lista de argumentos para um procedimento na linha ${tabela.get(indice).linha}.")
+            println("ERRO: Após abrir lista de argumentos para um procedimento na linha ${tabela[indice].linha}.")
             return false
         }
     }
@@ -445,13 +444,13 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO: é esperado um 'end' no fim do procedimento na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: é esperado um 'end' no fim do procedimento na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema nos comandos opcionais na linha ${tabela.get(indice).linha}.")
+                println("ERRO: problema nos comandos opcionais na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -483,7 +482,7 @@ class ControllerAnalisadorSintatico
         if(comando())
         {
             //após um comando vem um ';'
-            if (tabela.get(indice).token.equals(";"))
+            if (tabela[indice].token.equals(";"))
             {
                 /**aqui tem que desempilhar lista de comandos antes de receber um novo comando ou sair de um.**/
                 Semantico.desempilharComandos()
@@ -494,7 +493,7 @@ class ControllerAnalisadorSintatico
                     return true
             }
         }
-        println("ERRO: problema na lista de comandos na linha ${tabela.get(indice).linha}..")
+        println("ERRO: problema na lista de comandos na linha ${tabela[indice].linha}..")
         return false//ou é E, false??
     }
 
@@ -509,7 +508,7 @@ class ControllerAnalisadorSintatico
     private fun comando(): Boolean
     {
         /** identificador que será empilhado na pilhaDeComandos do Semântico **/
-        val id = Identificador(tabela.get(indice).token, "")
+        val id = Identificador(tabela[indice].token, "")
 
         if(identificador())
         {
@@ -528,7 +527,7 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO SEMÂNTICO: Não encontrou Identificador na linha ${tabela.get(indice).linha}.")
+                        println("ERRO SEMÂNTICO: Não encontrou Identificador na linha ${tabela[indice].linha}.")
                         return false
                     }
                 }
@@ -566,7 +565,7 @@ class ControllerAnalisadorSintatico
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: comando do if não é do tipo boolean na linha ${tabela.get(indice).linha}.")
+                    println("ERRO SEMÂNTICO: comando do if não é do tipo boolean na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
@@ -588,13 +587,13 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do' na linha ${tabela.get(indice).linha}.")
+                        println("ERRO SINTÁTICO: depois da expressão do 'while' é esperado um 'do' na linha ${tabela[indice].linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO SEMÂNTICO: comando do while não é do tipo boolean na linha ${tabela.get(indice).linha}.")
+                    println("ERRO SEMÂNTICO: comando do while não é do tipo boolean na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
@@ -612,29 +611,29 @@ class ControllerAnalisadorSintatico
                     if (listaSeletor()) {
                         if (REGEX_else()) {
                             AUX_proximo()
-                            if (tabela.get(indice).token.equals(":"))
+                            if (tabela[indice].token.equals(":"))
                             {
                                 AUX_proximo()
                                 return (comando())
                             } else {
-                                println("ERRO: problema de sintaxe no 'case', após o else é esperado um ':' na linha ${tabela.get(indice).linha}.")
+                                println("ERRO: problema de sintaxe no 'case', após o else é esperado um ':' na linha ${tabela[indice].linha}.")
                                 return false
                             }
                         } else {
-                            println("ERRO: problema de sintaxe no 'case', é esperado um 'else' após a lista do case na linha ${tabela.get(indice).linha}.")
+                            println("ERRO: problema de sintaxe no 'case', é esperado um 'else' após a lista do case na linha ${tabela[indice].linha}.")
                             return false
                         }
                     }
                 }
                 else
                 {
-                    println("ERRO: problema de sintaxe no 'case', é esperado um 'of' após um número na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: problema de sintaxe no 'case', é esperado um 'of' após um número na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema de sintaxe no 'case', é esperado um número após o case na linha ${tabela.get(indice).linha}.")
+                println("ERRO: problema de sintaxe no 'case', é esperado um número após o case na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -646,12 +645,12 @@ class ControllerAnalisadorSintatico
         if (seletor())
         {
             AUX_proximo()
-            if (tabela.get(indice).token.equals(":"))
+            if (tabela[indice].token.equals(":"))
             {
                 AUX_proximo()
                 if (comando())
                 {
-                    if (tabela.get(indice).token.equals(";"))
+                    if (tabela[indice].token.equals(";"))
                     {
                         AUX_proximo()
                         /** Aqui também tem que desempilhar os comandos **/
@@ -663,25 +662,25 @@ class ControllerAnalisadorSintatico
                     }
                     else
                     {
-                        println("ERRO: problema de sintaxe no 'case', é esperado um ';' após o comando do case seletor na linha ${tabela.get(indice).linha}.")
+                        println("ERRO: problema de sintaxe no 'case', é esperado um ';' após o comando do case seletor na linha ${tabela[indice].linha}.")
                         return false
                     }
                 }
                 else
                 {
-                    println("ERRO: problema de sintaxe no 'case', problema no 'else' na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: problema de sintaxe no 'case', problema no 'else' na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
             else
             {
-                println("ERRO: problema de sintaxe no 'case', após o seletor é esperado um ':' na linha ${tabela.get(indice).linha}.")
+                println("ERRO: problema de sintaxe no 'case', após o seletor é esperado um ':' na linha ${tabela[indice].linha}.")
                 return false
             }
         }
         else
         {
-            println("ERRO: problema de sintaxe no 'case', é esperado uma lista de seletores do case na linha ${tabela.get(indice).linha}.")
+            println("ERRO: problema de sintaxe no 'case', é esperado uma lista de seletores do case na linha ${tabela[indice].linha}.")
             return false
         }
     }
@@ -711,7 +710,7 @@ class ControllerAnalisadorSintatico
                                 if 7 > 6 and true then (EXPRESSÃO CORRETA)
                     Dentro do semântico o comando 7 > 6 se torna true do tipo boolean.
                  */
-                Semantico.analisaTipo(tabela.get(indice).token)
+                Semantico.analisaTipo(tabela[indice].token)
                 AUX_proximo()
                 return expressaoSimples()
             }
@@ -756,29 +755,29 @@ class ControllerAnalisadorSintatico
         if (REGEX_identificador())
         {
             AUX_proximo()
-            if (tabela.get(indice).token.equals("("))
+            if (tabela[indice].token.equals("("))
             {
-                val id = Identificador(tabela.get(indice-1).token, "procedure")
+                val id = Identificador(tabela[indice-1].token, "procedure")
                 if (Semantico.analisaProcedimento(id))
                 {
                     AUX_proximo()
                     if (listaDeExpressoes())
                     {
-                        if( tabela.get(indice).token.equals(")") )
+                        if( tabela[indice].token.equals(")") )
                         {
                             AUX_proximo()
                             return true
                         }
                         else
                         {
-                            println("ERRO: problema na sintax do procedimento na linha ${tabela.get(indice).linha}.")
+                            println("ERRO: problema na sintax do procedimento na linha ${tabela[indice].linha}.")
                             return false
                         }
                     }
                 }
                     else
                 {
-                    println("ERRO: na linha ${tabela.get(indice).linha}.")
+                    println("ERRO: na linha ${tabela[indice].linha}.")
                     return false
                 }
             }
@@ -808,13 +807,13 @@ class ControllerAnalisadorSintatico
             AUX_proximo()
             if (opMultiplicativo())
             {
-                Semantico.analisaTipo(tabela.get(indice).token)
+                Semantico.analisaTipo(tabela[indice].token)
                 AUX_proximo()
                 return termo()
             }
             return true
         }
-        println("ERRO: problema no termo na linha ${tabela.get(indice).linha}.")
+        println("ERRO: problema no termo na linha ${tabela[indice].linha}.")
         return false
     }
 
@@ -831,21 +830,21 @@ class ControllerAnalisadorSintatico
      */
     private fun fator(): Boolean {
         /** identificador que será empilhado na pilhaDeComandos do Semântico **/
-        val id = Identificador(tabela.get(indice).token, "")
+        val id = Identificador(tabela[indice].token, "")
 
         if (REGEX_identificador())
         {
             /**acho que o semantico é pra ser chamado aqui**/
             Semantico.analisaVariavel(id)
             AUX_proximo()
-            if (tabela.get(indice).token.equals("("))
+            if (tabela[indice].token.equals("("))
             {
                 AUX_proximo()
                 if (listaDeExpressoes())
                 {
                     //se abriu tem que fechar
                     AUX_proximo()
-                    if (tabela.get(indice).token.equals(")"))
+                    if (tabela[indice].token.equals(")"))
                     {
                         AUX_proximo()
                         return true
@@ -876,16 +875,16 @@ class ControllerAnalisadorSintatico
             Semantico.analisaTipo("boolean")
             return true
         }
-        else if ( tabela.get(indice).token.equals("(") )
+        else if ( tabela[indice].token.equals("(") )
         {
             AUX_proximo()
             if (expressao())
             {
-                return tabela.get(indice).token.equals(")")
+                return tabela[indice].token.equals(")")
             }
             else
             {
-                println("ERRO: problema no fator -> (expressão) na linha ${tabela.get(indice).linha}.")
+                println("ERRO: problema no fator -> (expressão) na linha ${tabela[indice].linha}.")
                 return false
             }
         }
@@ -896,7 +895,7 @@ class ControllerAnalisadorSintatico
         }
         else
         {
-            println("ERRO: problema no fator na linha ${tabela.get(indice).linha}.")
+            println("ERRO: problema no fator na linha ${tabela[indice].linha}.")
             return false
         }
     }
@@ -910,13 +909,13 @@ class ControllerAnalisadorSintatico
         if (expressao())
         {
             AUX_proximo()
-            if (tabela.get(indice).token.equals(","))
+            if (tabela[indice].token.equals(","))
                 return listaDeExpressoes()
             indice--
             return true
         }
 
-        println("ERRO: problema na lista de expressões na linha ${tabela.get(indice).linha}.")
+        println("ERRO: problema na lista de expressões na linha ${tabela[indice].linha}.")
         return false
     }
 
@@ -954,53 +953,53 @@ class ControllerAnalisadorSintatico
     /*******************************************************************************************************************
      *                                   Atalhos para testar Expressao Regular                                         *
      ******************************************************************************************************************/
-    private fun REGEX_program() : Boolean = tabela.get(indice).token.matches(PROGRAM.toRegex())
+    private fun REGEX_program() : Boolean = tabela[indice].token.matches(PROGRAM.toRegex())
 
-    private fun REGEX_begin() : Boolean = tabela.get(indice).token.matches(BEGIN.toRegex())
+    private fun REGEX_begin() : Boolean = tabela[indice].token.matches(BEGIN.toRegex())
 
-    private fun REGEX_procedure() : Boolean = tabela.get(indice).token.matches(PROCEDURE.toRegex())
+    private fun REGEX_procedure() : Boolean = tabela[indice].token.matches(PROCEDURE.toRegex())
 
-    private fun REGEX_var() : Boolean = tabela.get(indice).token.matches(VAR.toRegex())
+    private fun REGEX_var() : Boolean = tabela[indice].token.matches(VAR.toRegex())
 
-    private fun REGEX_identificador() : Boolean = tabela.get(indice).classificacao.equals("IDENTIFICADOR")
+    private fun REGEX_identificador() : Boolean = tabela[indice].classificacao.equals("IDENTIFICADOR")
 
-    private fun REGEX_tipo() : Boolean = tabela.get(indice).token.matches(TIPO.toRegex())
+    private fun REGEX_tipo() : Boolean = tabela[indice].token.matches(TIPO.toRegex())
 
-    private fun REGEX_end() : Boolean = tabela.get(indice).token.matches(END.toRegex())
+    private fun REGEX_end() : Boolean = tabela[indice].token.matches(END.toRegex())
 
-    private fun REGEX_if() : Boolean = tabela.get(indice).token.matches(IF.toRegex())
+    private fun REGEX_if() : Boolean = tabela[indice].token.matches(IF.toRegex())
 
-    private fun REGEX_then() : Boolean = tabela.get(indice).token.matches(THEN.toRegex())
+    private fun REGEX_then() : Boolean = tabela[indice].token.matches(THEN.toRegex())
 
-    private fun REGEX_else() : Boolean = tabela.get(indice).token.matches(ELSE.toRegex())
+    private fun REGEX_else() : Boolean = tabela[indice].token.matches(ELSE.toRegex())
 
-    private fun REGEX_while() : Boolean = tabela.get(indice).token.matches(WHILE.toRegex())
+    private fun REGEX_while() : Boolean = tabela[indice].token.matches(WHILE.toRegex())
 
-    private fun REGEX_do() : Boolean = tabela.get(indice).token.matches(DO.toRegex())
+    private fun REGEX_do() : Boolean = tabela[indice].token.matches(DO.toRegex())
 
-    private fun REGEX_atribuicao() : Boolean = tabela.get(indice).classificacao.equals("ATRIBUICAO")
+    private fun REGEX_atribuicao() : Boolean = tabela[indice].classificacao.equals("ATRIBUICAO")
 
-    private fun REGEX_operadorAditivo() : Boolean = tabela.get(indice).classificacao.equals("OPERADOR_ADITIVO")
+    private fun REGEX_operadorAditivo() : Boolean = tabela[indice].classificacao.equals("OPERADOR_ADITIVO")
 
-    private fun REGEX_operadorMultiplicativo() : Boolean = tabela.get(indice).classificacao.equals("OPERADOR_MULTIPLICATIVO")
+    private fun REGEX_operadorMultiplicativo() : Boolean = tabela[indice].classificacao.equals("OPERADOR_MULTIPLICATIVO")
 
-    private fun REGEX_operadorRelacional() : Boolean = tabela.get(indice).classificacao.equals("OPERADOR_RELACIONAL")
+    private fun REGEX_operadorRelacional() : Boolean = tabela[indice].classificacao.equals("OPERADOR_RELACIONAL")
 
-    private fun REGEX_sinal() : Boolean = tabela.get(indice).token.matches("[+\\-]".toRegex())
+    private fun REGEX_sinal() : Boolean = tabela[indice].token.matches("[+\\-]".toRegex())
 
-    private fun REGEX_numInt() : Boolean = tabela.get(indice).classificacao.equals("NUMERO_INTEIRO")
+    private fun REGEX_numInt() : Boolean = tabela[indice].classificacao.equals("NUMERO_INTEIRO")
 
-    private fun REGEX_numReal() : Boolean = tabela.get(indice).classificacao.equals("NUMERO_REAL")
+    private fun REGEX_numReal() : Boolean = tabela[indice].classificacao.equals("NUMERO_REAL")
 
-    private fun REGEX_true() : Boolean = tabela.get(indice).token.matches(TRUE.toRegex())
+    private fun REGEX_true() : Boolean = tabela[indice].token.matches(TRUE.toRegex())
 
-    private fun REGEX_false() : Boolean = tabela.get(indice).token.matches(FALSE.toRegex())
+    private fun REGEX_false() : Boolean = tabela[indice].token.matches(FALSE.toRegex())
 
-    private fun REGEX_not(): Boolean = tabela.get(indice).token.matches(NOT.toRegex())
+    private fun REGEX_not(): Boolean = tabela[indice].token.matches(NOT.toRegex())
 
     //FEITO NA SALA
-    private fun REGEX_case(): Boolean = tabela.get(indice).token.matches(CASE.toRegex())
-    private fun REGEX_of(): Boolean = tabela.get(indice).token.matches(OF.toRegex())
+    private fun REGEX_case(): Boolean = tabela[indice].token.matches(CASE.toRegex())
+    private fun REGEX_of(): Boolean = tabela[indice].token.matches(OF.toRegex())
 
     /*******************************************************************************************************************
      *                           Métodos auxiliares para o analisador sintático                                        *
