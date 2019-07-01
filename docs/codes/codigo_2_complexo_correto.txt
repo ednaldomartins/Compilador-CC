@@ -1,13 +1,13 @@
 {comentario certo}
-program teste;
+PROGRAM teste;
 var
     y:real;
-procedure adicao(var x:real; z:integer);
+procedure adicao(var x:real; z:intEGER);
 		var
             a, b: real;
         procedure add(i: integer);
                 begin
-                    //FEITO NA SALA
+                    //COMENTÁRIO FEITO EM SALA
                     case 2 of
                         1: i := 6;
                         2: i := 1;
@@ -30,7 +30,7 @@ procedure adicao(var x:real; z:integer);
 			    add(a);
 		end;
 
-begin
+Begin
     y:=4;
     adicao(y);
-end.
+End.
