@@ -1,4 +1,5 @@
-{comentario certo}
+{comentario certo
+comentario em bloco}
 PROGRAM teste;
 var
     y:real;

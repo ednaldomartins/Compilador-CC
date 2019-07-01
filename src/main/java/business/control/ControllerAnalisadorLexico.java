@@ -18,29 +18,52 @@ public class ControllerAnalisadorLexico {
         for(int l = 0; l < numeroLinhas; l++)
         {
             String linha = codigo.get(l).toString();
+            System.out.println("Encontrada na linha" + (l+1) + " ===>  " + linha);
             int tamanhoLinha = linha.length();
             for(int i = 0; i < tamanhoLinha;) {
-                System.out.println("caracter encontrada na linha" + (l+1) + ">  " +linha.substring(i,i+1) +"  <");
                 //pular ESPACO e TAB
                 if (   i+1 <= tamanhoLinha && linha.substring(i, i+1).matches(" |\t")   ) {i++;}
-                //COMENTARIO + COMENTARIO aplicado em aula
-                else if (   i+1 <= tamanhoLinha && ( "{".equals(linha.substring(i, i+1)) || "/".equals(linha.substring(i, i+1)) )   )
+                //COMENTARIO aplicado em aula
+                else if (   i+2 <= tamanhoLinha && "//".equals(linha.substring(i, i+2))   )
                 {
+                    tabela.add( new Simbolo ( linha.substring(i, tamanhoLinha), "COMENTARIO", l+1 ) );
+                    i = linha.length();
+                }
+                //COMENTARIO em bloco
+                else if (  i+1 <= tamanhoLinha && ( "{".equals(linha.substring(i, i+1)))   ) {
                     int j = i + 1;
-                    while(   j < tamanhoLinha && (!"}".equals(linha.substring(i, j)))   )
-                    {
-                        j++;
+                    boolean comentarioAberto = true;
+                    String comentario = "";
+
+                    while (comentarioAberto) {
+                        while ( j <= tamanhoLinha ) {
+                            if ("}".equals(linha.substring(j-1, j))) {
+                                comentarioAberto = false;
+                                j++;
+                                break;
+                            }
+                            j++;
+                        }
+                        comentario += linha.substring(i, j-1);
+                        //se o comentario ainda esta aberto, entao...
+                        if (comentarioAberto) {
+                            if ( l < numeroLinhas) {
+                                l++;
+                                linha = codigo.get(l).toString();
+                                tamanhoLinha = linha.length();
+                                i = 0;
+                                j = i+1;
+                            }
+                            //se nao tem mais linhas a serem lidas entao há um erro. comentario nunca foi fechado.
+                            else {
+                                System.out.println("erro no comentario: Comentário aberto e nunca fechado.");
+                                System.exit(0);
+                            }
+                            System.out.println("Encontrada na linha" + (l+1) + " ===>  " + linha);
+                        }
                     }
-                    if (j <= tamanhoLinha && (linha.substring(i, j).matches(Lexico.COMENTARIO) || linha.substring(i, j).matches(Lexico.COMENTARIO_AULA) ))
-                    {
-                        tabela.add( new Simbolo ( linha.substring(i, j), "COMENTARIO", l+1 ) );
-                        i = j;
-                    }
-                    else
-                    {
-                        System.out.println("erro no comentario");
-                        System.exit(0);
-                    }
+                    tabela.add(new Simbolo(comentario, "COMENTARIO", l + 1));
+                    i = j-1;
                 }
                 //PALAVRA
                 else if ( i+1 <= tamanhoLinha && linha.substring(i, i+1).matches("[a-z]*|_*") )
