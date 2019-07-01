@@ -31,7 +31,7 @@ public class Arquivo {
         try (BufferedReader reader = Files.newBufferedReader(savePath, utf8)){
             String linha = null;
             while( (linha = reader.readLine()) != null)
-                codigo.add( linha );
+                codigo.add( linha.toLowerCase() );
         }
         catch(IOException ex)
         {
